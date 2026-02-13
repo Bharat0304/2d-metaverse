@@ -1,0 +1,192 @@
+// =======================
+// Prisma Generator
+// =======================
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+// =======================
+// Datasource
+// =======================
+datasource db {
+  provider = "postgresql"
+}
+
+// =======================
+// MODELS
+// =======================
+
+model User {
+  id       String @id @default(uuid())
+  name     String
+  email    String @unique
+  password String
+  status   Status?
+
+  // Relations
+  adminMaps          Map[]          @relation("AdminMaps")
+  spaceMemberships   SpaceMember[]
+  messages           ChatMessage[]
+  adminOrganizations Organization[] @relation("AdminOrganization")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Organization {
+  id   String @id @default(uuid())
+  name String
+
+  adminId String?
+  admin   User ?  @relation("AdminOrganization", fields: [adminId], references: [id], onDelete: Cascade)
+  spaceId String?
+  spaces Space[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Space {
+  id   String @id @default(uuid())
+  name String
+  slug String @unique
+  description String?
+  orgId String
+  org   Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+
+  rooms    Room[]
+  members  SpaceMember[]
+  messages ChatMessage[]
+
+  isPublic Boolean?  @default(false)
+  createdAt DateTime @default(now())
+}
+
+model Room {
+  id   String @id @default(uuid())
+  name String
+
+  spaceId String
+  space   Space  @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+
+  mapId String
+  map   Map    @relation(fields: [mapId], references: [id], onDelete: Cascade)
+
+  messages ChatMessage[]
+
+  createdAt DateTime @default(now())
+}
+
+model Map {
+  id   String @id @default(uuid())
+  name String
+
+  width    Int
+  height   Int
+  tileSize Int
+
+  adminId String?
+  admin   User?   @relation("AdminMaps", fields: [adminId], references: [id], onDelete: Cascade)
+
+  rooms    Room[]
+  elements MapElement[]
+  triggers InteractionTrigger[]
+
+  type      SpaceType
+  createdAt DateTime  @default(now())
+}
+
+model MapElement {
+  id String @id @default(uuid())
+
+  mapId String
+  map   Map    @relation(fields: [mapId], references: [id], onDelete: Cascade)
+
+  type   String
+  x      Int
+  y      Int
+  width  Int
+  height Int
+}
+
+model InteractionTrigger {
+  id String @id @default(uuid())
+
+  mapId String
+  map   Map    @relation(fields: [mapId], references: [id], onDelete: Cascade)
+
+  type   String
+  x      Int
+  y      Int
+  width  Int
+  height Int
+}
+
+model SpaceMember {
+  id String @id @default(uuid())
+
+  spaceId String
+  userId  String
+  role    Role   @default(USER)
+
+  space Space @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([spaceId, userId])
+}
+
+model ChatMessage {
+  id      String @id @default(uuid())
+  content String
+
+  roomId String
+  room   Room   @relation(fields: [roomId], references: [id], onDelete: Cascade)
+
+  spaceId String
+  space   Space  @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  createdAt DateTime @default(now())
+}
+
+model Invite {
+  id    String @id @default(uuid())
+  email String
+  role  Role   @default(USER)
+
+  spaceId String
+}
+
+model Ban {
+  id      String @id @default(uuid())
+  spaceId String
+  userId  String
+}
+
+model Asset {
+  id   String @id @default(uuid())
+  name String
+  url  String
+}
+
+// =======================
+// ENUMS
+// =======================
+
+enum Role {
+  ADMIN
+  USER
+}
+
+enum Status {
+  ACTIVE
+  INACTIVE
+}
+
+enum SpaceType {
+  HYBRID
+  CONFERENCE
+}
