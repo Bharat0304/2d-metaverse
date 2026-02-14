@@ -1,9 +1,12 @@
-import { WebSocket, WebSocketServer } from "ws";
+import { WebSocketServer } from 'ws';
+
 const wss = new WebSocketServer({ port: 8080 });
-const server=createServer();
+const rooms:any={};
+wss.on('connection', function connection(ws) {
+  ws.on('error', console.error);
+});
+  wss.on('message', function message(data) {
+    console.log('received: %s', data);
+  });
+ 
 
-
-
-wss.on("connection", (ws: WebSocket) => {
-  console.log("Client connected");
-}) 
