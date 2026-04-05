@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Nunito:wght@700;800;900&family=Share+Tech+Mono&display=swap" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html{color-scheme:light only}
+:root{
+  --red:#ff4d6d;--yellow:#ffd166;--green:#06d6a0;--blue:#118ab2;
+  --purple:#9b5de5;--pink:#f15bb5;--orange:#ff6d00;
+  --ink:#1a0a2e;--ink2:#3d1f6e;--dim:#7a5fa0;
+  --bg:#fef6ff;
+  --px:'Press Start 2P',monospace;
+  --mn:'Share Tech Mono',monospace;
+  --bd:'Nunito',sans-serif;
+}
+body{background:var(--bg);color:var(--ink);font-family:var(--bd);overflow-x:hidden}
+
+/* PAGE NAV */
+.page{display:none}.page.active{display:block}
+.site-nav{background:#fff;border-bottom:3px solid var(--ink);
+  display:flex;align-items:center;justify-content:space-between;padding:0 36px;height:56px;
+  position:sticky;top:0;z-index:50}
+.logo{font-family:var(--px);font-size:13px;letter-spacing:2px;cursor:pointer}
+.logo span:nth-child(1){color:var(--red)}.logo span:nth-child(2){color:var(--yellow)}
+.logo span:nth-child(3){color:var(--green)}.logo span:nth-child(4){color:var(--blue)}
+.logo span:nth-child(5){color:var(--purple)}.logo span:nth-child(6){color:var(--pink)}
+.nav-links{display:flex;list-style:none}
+.nav-links a{font-family:var(--px);font-size:6px;color:var(--dim);text-decoration:none;
+  padding:0 14px;height:56px;line-height:56px;border-left:1px solid #f0e0ff;transition:all .15s}
+.nav-links a:hover{background:var(--yellow);color:var(--ink)}
+.nav-r{display:flex;gap:8px;align-items:center}
+.hearts{display:flex;gap:3px}
+.h{width:12px;height:12px;background:var(--red);clip-path:polygon(50% 85%,10% 40%,0 25%,15% 10%,30% 10%,50% 30%,70% 10%,85% 10%,100% 25%,90% 40%)}
+.nbtn{font-family:var(--px);font-size:7px;border:2px solid var(--ink);padding:7px 14px;cursor:pointer;transition:all .1s}
+.nbtn:active{transform:translate(2px,2px)}
+.nbtn-log{background:#fff;color:var(--ink);box-shadow:3px 3px 0 var(--ink)}
+.nbtn-log:hover{background:var(--yellow)}
+.nbtn-play{background:var(--purple);color:#fff;box-shadow:3px 3px 0 var(--ink)}
+.nbtn-play:hover{background:var(--pink)}
+
+/* CHECKER BG */
+.checker{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:linear-gradient(45deg,rgba(155,93,229,.04) 25%,transparent 25%),
+  linear-gradient(-45deg,rgba(155,93,229,.04) 25%,transparent 25%),
+  linear-gradient(45deg,transparent 75%,rgba(155,93,229,.04) 75%),
+  linear-gradient(-45deg,transparent 75%,rgba(155,93,229,.04) 75%);
+  background-size:18px 18px;background-position:0 0,0 9px,9px -9px,-9px 0}
+
+/* ─── LANDING PAGE ─── */
+.hero{min-height:calc(100vh - 56px);display:flex;flex-direction:column;align-items:center;
+  justify-content:center;padding:80px 36px 60px;position:relative;overflow:hidden;
+  background:linear-gradient(135deg,#fff0f7 0%,#f0e8ff 35%,#e8f0ff 65%,#e8fff8 100%)}
+.hero-shapes{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.sh{position:absolute;border:3px solid var(--ink)}
+.sh1{width:110px;height:110px;background:var(--yellow);top:8%;left:4%;transform:rotate(15deg);box-shadow:4px 4px 0 var(--ink);animation:shFloat 6s ease-in-out infinite}
+.sh2{width:70px;height:70px;background:var(--green);top:12%;right:7%;border-radius:50%;box-shadow:4px 4px 0 var(--ink);animation:shFloat 5s ease-in-out 1s infinite}
+.sh3{width:55px;height:55px;background:var(--pink);bottom:18%;left:6%;box-shadow:3px 3px 0 var(--ink);transform:rotate(-10deg);animation:shFloat 7s ease-in-out 2s infinite}
+.sh4{width:90px;height:90px;background:var(--blue);bottom:12%;right:5%;border-radius:50% 0;box-shadow:4px 4px 0 var(--ink);animation:shFloat 5.5s ease-in-out 0.5s infinite}
+.sh5{width:45px;height:45px;background:var(--red);top:48%;left:2%;border-radius:50%;box-shadow:3px 3px 0 var(--ink);animation:shFloat 8s ease-in-out 3s infinite}
+.sh6{width:65px;height:65px;background:var(--orange);top:42%;right:3%;transform:rotate(20deg);box-shadow:3px 3px 0 var(--ink);animation:shFloat 6.5s ease-in-out 1.5s infinite}
+@keyframes shFloat{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-12px) rotate(5deg)}}
+.sh1,.sh6{animation-name:shFloat}
+
+.hero-c{position:relative;z-index:2;text-align:center}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;background:var(--purple);color:#fff;
+  border:2px solid var(--ink);font-family:var(--px);font-size:7px;padding:6px 14px;
+  margin-bottom:24px;box-shadow:3px 3px 0 var(--ink)}
+.blink{width:7px;height:7px;background:#fff;border-radius:50%;animation:bl 1s step-end infinite}
+@keyframes bl{50%{opacity:0}}
+
+.title-row{display:flex;justify-content:center;gap:4px;margin-bottom:10px;flex-wrap:wrap}
+.tl{font-family:var(--px);font-size:clamp(40px,9vw,88px);
+  border:3px solid var(--ink);width:clamp(52px,10vw,100px);text-align:center;
+  line-height:1;padding:10px 4px 8px;position:relative;transition:transform .15s}
+.tl:hover{transform:translateY(-8px) scale(1.05)}
+.tl-v{background:var(--red);color:#fff;box-shadow:5px 5px 0 var(--ink);animation:bop 2s ease-in-out infinite}
+.tl-o{background:var(--yellow);color:var(--ink);box-shadow:5px 5px 0 var(--ink);animation:bop 2s ease-in-out .1s infinite}
+.tl-r{background:var(--green);color:#fff;box-shadow:5px 5px 0 var(--ink);animation:bop 2s ease-in-out .2s infinite}
+.tl-t{background:var(--blue);color:#fff;box-shadow:5px 5px 0 var(--ink);animation:bop 2s ease-in-out .3s infinite}
+.tl-e{background:var(--purple);color:#fff;box-shadow:5px 5px 0 var(--ink);animation:bop 2s ease-in-out .4s infinite}
+.tl-x{background:var(--pink);color:#fff;box-shadow:5px 5px 0 var(--ink);animation:bop 2s ease-in-out .5s infinite}
+@keyframes bop{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+
+.hero-sub{font-family:var(--px);font-size:clamp(6px,1.3vw,9px);color:var(--dim);letter-spacing:2px;margin-bottom:22px;line-height:2.2}
+.hero-desc{font-family:var(--bd);font-size:17px;color:var(--ink2);margin-bottom:36px;line-height:1.7;max-width:500px;margin-left:auto;margin-right:auto;font-weight:800}
+.hero-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:48px}
+.pbtn{font-family:var(--px);font-size:8px;border:2px solid var(--ink);padding:12px 20px;cursor:pointer;transition:all .1s;letter-spacing:1px}
+.pbtn:hover{transform:translate(-2px,-2px)}
+.pbtn:active{transform:translate(3px,3px)}
+.pb-r{background:var(--red);color:#fff;box-shadow:4px 4px 0 var(--ink)}.pb-r:hover{box-shadow:6px 6px 0 var(--ink)}.pb-r:active{box-shadow:1px 1px 0 var(--ink)}
+.pb-y{background:var(--yellow);color:var(--ink);box-shadow:4px 4px 0 var(--ink)}.pb-y:hover{box-shadow:6px 6px 0 var(--ink)}.pb-y:active{box-shadow:1px 1px 0 var(--ink)}
+.pb-g{background:var(--green);color:var(--ink);box-shadow:4px 4px 0 var(--ink)}.pb-g:hover{box-shadow:6px 6px 0 var(--ink)}.pb-g:active{box-shadow:1px 1px 0 var(--ink)}
+.pb-p{background:var(--purple);color:#fff;box-shadow:4px 4px 0 var(--ink)}.pb-p:hover{box-shadow:6px 6px 0 var(--ink)}.pb-p:active{box-shadow:1px 1px 0 var(--ink)}
+.pb-w{background:#fff;color:var(--ink);box-shadow:4px 4px 0 var(--ink)}.pb-w:hover{box-shadow:6px 6px 0 var(--ink)}.pb-w:active{box-shadow:1px 1px 0 var(--ink)}
+
+.stat-strip{display:flex;border:3px solid var(--ink);background:#fff;box-shadow:6px 6px 0 var(--ink)}
+.ss{flex:1;padding:16px 18px;text-align:center;border-right:2px solid var(--ink);position:relative}
+.ss:last-child{border-right:none}
+.ss-bar{position:absolute;bottom:0;left:0;right:0;height:5px}
+.ss-n{font-family:var(--px);font-size:clamp(10px,2.2vw,18px);display:block;margin-bottom:7px}
+.ss-l{font-family:var(--px);font-size:6px;color:var(--dim);letter-spacing:1px}
+
+/* MARQUEES */
+.mq{overflow:hidden;white-space:nowrap;padding:9px 0;border-top:3px solid var(--ink);border-bottom:3px solid var(--ink)}
+.mqi{display:inline-block}
+.mq1{background:var(--red)}.mq1 .mqi{animation:mqa 18s linear infinite}
+.mq2{background:var(--blue)}.mq2 .mqi{animation:mqb 16s linear infinite}
+.mq3{background:var(--purple)}.mq3 .mqi{animation:mqa 20s linear infinite}
+@keyframes mqa{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@keyframes mqb{from{transform:translateX(-50%)}to{transform:translateX(0%)}}
+.mq span{font-family:var(--px);font-size:7px;margin-right:24px;letter-spacing:1px;color:#fff}
+.mq .sep{opacity:.6}
+
+/* SECTION */
+.sec{position:relative;z-index:1;padding:72px 36px}
+.stag{font-family:var(--px);font-size:7px;letter-spacing:2px;margin-bottom:10px;display:block}
+.stitle{font-family:var(--px);font-size:clamp(11px,2.3vw,19px);color:var(--ink);margin-bottom:44px;line-height:2}
+.stitle em{font-style:normal}
+
+/* MAP */
+.map-sec{background:linear-gradient(135deg,#fff9e6 0%,#ffedf5 100%);border-top:3px solid var(--ink)}
+.map-grid{display:grid;grid-template-columns:1fr 1fr;gap:44px;align-items:start}
+.pmap{border:3px solid var(--ink);box-shadow:6px 6px 0 var(--ink);overflow:hidden;background:#fff}
+.pm-h{padding:8px 12px;border-bottom:2px solid var(--ink);display:flex;justify-content:space-between;align-items:center}
+.pm-ht{font-family:var(--px);font-size:7px;color:#fff}
+.pm-dots{display:flex;gap:4px}
+.pd{width:9px;height:9px;border:1px solid rgba(0,0,0,.25)}
+.pm-g{display:grid;grid-template-columns:repeat(5,1fr);grid-template-rows:repeat(4,56px);gap:2px;padding:7px;background:#f5eeff}
+.rm{border:2px solid #d4b8f0;background:#fff;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;font-family:var(--px);font-size:5px;color:#b0a0c8;padding:3px;
+  cursor:pointer;transition:all .15s;text-align:center;position:relative}
+.rm:hover{border-color:var(--purple);color:var(--purple);background:#f8f0ff}
+.rm.hub{grid-column:2/4;grid-row:1/3;background:#ffedf5;border-color:var(--red);color:var(--red);font-size:8px}
+.rm.cy{border-color:var(--green);color:#005a40;background:#eafff8}
+.rm.yw{border-color:var(--yellow);color:#6a4800;background:#fffbe6}
+.rm.bl{border-color:var(--blue);color:#003d5c;background:#e6f4ff}
+.ava{position:absolute;width:7px;height:7px;border:1px solid var(--ink)}
+.av1{background:var(--red);animation:wa 7s linear infinite}
+.av2{background:var(--green);animation:wb 9s linear infinite}
+.av3{background:var(--blue);animation:wc 5s linear infinite}
+@keyframes wa{0%{top:10%;left:10%}25%{top:60%;left:45%}50%{top:20%;left:80%}75%{top:70%;left:20%}100%{top:10%;left:10%}}
+@keyframes wb{0%{top:80%;left:80%}33%{top:10%;left:50%}66%{top:50%;left:10%}100%{top:80%;left:80%}}
+@keyframes wc{0%{top:40%;left:40%}50%{top:75%;left:65%}100%{top:40%;left:40%}}
+.pm-f{background:#f5eeff;border-top:2px solid var(--ink);padding:7px 12px;display:flex;gap:8px;justify-content:space-between;flex-wrap:wrap}
+.pmi{font-family:var(--px);font-size:5px;color:var(--dim)}
+.pmi b{color:var(--ink)}
+.map-info h3{font-family:var(--px);font-size:13px;color:var(--ink);margin-bottom:16px;line-height:2}
+.map-info p{font-family:var(--bd);font-size:15px;color:var(--ink2);margin-bottom:20px;line-height:1.7;font-weight:800}
+.frow{display:flex;gap:8px;margin-bottom:9px;font-family:var(--bd);font-size:14px;color:var(--dim);line-height:1.5;font-weight:700;align-items:flex-start}
+.fb{font-family:var(--px);font-size:6px;flex-shrink:0;color:#fff;padding:2px 5px;margin-top:2px}
+
+/* FEATURES */
+.feat-sec{background:linear-gradient(135deg,#e6f4ff 0%,#eafff8 100%);border-top:3px solid var(--ink)}
+.feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.fc{background:#fff;border:2px solid var(--ink);padding:24px 18px;box-shadow:4px 4px 0 var(--ink);transition:all .15s;position:relative;overflow:hidden}
+.fc:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 var(--ink)}
+.fc-t{height:5px;position:absolute;top:0;left:0;right:0}
+.fc-n{font-family:var(--px);font-size:6px;color:#ccc;margin-bottom:10px}
+.fc-i{font-size:26px;margin-bottom:10px;display:block}
+.fc-nm{font-family:var(--px);font-size:8px;color:var(--ink);margin-bottom:8px;line-height:1.8}
+.fc-tx{font-family:var(--bd);font-size:13px;color:var(--dim);line-height:1.6;font-weight:700}
+
+/* WORLDS */
+.world-sec{background:linear-gradient(135deg,#ffedf5 0%,#f5eeff 50%,#fffbe6 100%);border-top:3px solid var(--ink)}
+.world-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.wc{border:2px solid var(--ink);overflow:hidden;box-shadow:4px 4px 0 var(--ink);transition:all .15s;cursor:pointer;background:#fff}
+.wc:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 var(--ink)}
+.wt{height:80px;border-bottom:2px solid var(--ink);display:flex;align-items:center;justify-content:center}
+.wt1{background:linear-gradient(135deg,#ffd166,#ff4d6d)}
+.wt2{background:linear-gradient(135deg,#06d6a0,#118ab2)}
+.wt3{background:linear-gradient(135deg,#f15bb5,#9b5de5)}
+.wt4{background:linear-gradient(135deg,#118ab2,#9b5de5)}
+.wt5{background:linear-gradient(135deg,#ff4d6d,#ff6d00)}
+.wt6{background:repeating-linear-gradient(45deg,#f5f5f5 0,#f5f5f5 8px,#fff 8px,#fff 16px)}
+.wt-ico{font-size:26px}
+.wb{padding:10px 12px;background:#fff}
+.wc-tag{font-family:var(--px);font-size:5px;color:var(--dim);margin-bottom:3px;letter-spacing:1px}
+.wc-nm{font-family:var(--px);font-size:8px;color:var(--ink);margin-bottom:6px;line-height:1.7}
+.wc-bot{display:flex;justify-content:space-between;align-items:center}
+.wc-pl{font-family:var(--mn);font-size:11px;color:var(--dim);font-weight:700}
+.pill{font-family:var(--px);font-size:5px;padding:3px 7px;border:1px solid var(--ink)}
+
+/* HOW */
+.how-sec{background:#fff;border-top:3px solid var(--ink)}
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.step{border:2px solid var(--ink);padding:20px 14px;box-shadow:4px 4px 0 var(--ink)}
+.step-top{height:7px;margin:-20px -14px 14px;border-bottom:2px solid var(--ink)}
+.step-n{font-family:var(--px);font-size:20px;margin-bottom:10px}
+.step-nm{font-family:var(--px);font-size:7px;color:var(--ink);margin-bottom:8px;line-height:1.9}
+.step-d{font-family:var(--bd);font-size:13px;color:var(--dim);line-height:1.6;font-weight:700}
+
+/* LEADERBOARD */
+.lb-sec{background:linear-gradient(135deg,#f5eeff 0%,#ffedf5 100%);border-top:3px solid var(--ink)}
+.lb-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.lb-box{border:2px solid var(--ink);box-shadow:5px 5px 0 var(--ink);overflow:hidden;background:#fff}
+.lb-hd{padding:9px 13px;border-bottom:2px solid var(--ink);display:flex;justify-content:space-between;align-items:center}
+.lb-ht{font-family:var(--px);font-size:7px;color:#fff}
+.lb-lv{font-family:var(--px);font-size:6px;animation:bl 1s step-end infinite}
+.lb-rw{display:flex;align-items:center;gap:7px;padding:9px 12px;border-bottom:1px solid #f5eeff;transition:background .15s}
+.lb-rw:hover{background:#fdf5ff}
+.lb-rk{font-family:var(--px);font-size:7px;width:18px}
+.lb-av{width:24px;height:24px;border:2px solid var(--ink);display:flex;align-items:center;justify-content:center;font-family:var(--px);font-size:5px}
+.lb-nm{font-family:var(--mn);font-size:11px;color:var(--ink);flex:1;font-weight:700}
+.lb-bw{flex:1;height:5px;background:#f0e8ff;border:1px solid #d4b8f0}
+.lb-bf{height:100%}
+.lb-sc{font-family:var(--px);font-size:6px}
+.ev-hd{padding:9px 13px;border-bottom:2px solid var(--ink)}
+.ev-ht{font-family:var(--px);font-size:7px}
+.ev-rw{display:flex;align-items:center;gap:8px;padding:9px 12px;border-bottom:1px solid #f5eeff}
+.ev-dot{width:8px;height:8px;border:1px solid var(--ink);flex-shrink:0}
+.ev-live{animation:pulse 1.2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.ev-nm{font-family:var(--mn);font-size:11px;color:var(--ink);flex:1;font-weight:700}
+.ev-bg{font-family:var(--px);font-size:5px;padding:3px 7px;border:1px solid var(--ink)}
+.ev-ft{padding:10px 12px}
+
+/* CTA */
+.cta-sec{border-top:3px solid var(--ink);text-align:center;padding:80px 36px;position:relative;overflow:hidden}
+.cta-grad{position:absolute;inset:0;background:linear-gradient(135deg,var(--purple) 0%,var(--red) 50%,var(--pink) 100%)}
+.cta-dots{position:absolute;inset:0;background-image:radial-gradient(rgba(255,255,255,.15) 1px,transparent 1px);background-size:18px 18px}
+.cta-c{position:relative;z-index:1}
+.cta-tl{font-family:var(--px);font-size:clamp(13px,3vw,26px);color:#fff;margin-bottom:12px;line-height:2;text-shadow:3px 3px 0 rgba(0,0,0,.15)}
+.cta-sb{font-family:var(--mn);font-size:13px;color:rgba(255,255,255,.85);letter-spacing:2px;margin-bottom:28px;font-weight:700}
+.cta-row{display:flex;max-width:440px;margin:0 auto 16px}
+.cta-inp{flex:1;background:#fff;border:2px solid var(--ink);border-right:none;color:var(--ink);padding:11px 13px;font-family:var(--mn);font-size:13px;outline:none;font-weight:700}
+.cta-inp::placeholder{color:#bbb}
+.cta-b{font-family:var(--px);font-size:7px;background:var(--ink);color:#fff;border:2px solid var(--ink);padding:11px 14px;cursor:pointer;transition:all .1s;white-space:nowrap}
+.cta-b:hover{background:var(--yellow);color:var(--ink)}
+.cta-nt{font-family:var(--px);font-size:6px;color:rgba(255,255,255,.55);letter-spacing:1px}
+
+/* FOOTER */
+.ft{background:var(--ink);padding:28px 36px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}
+.ft-logo{font-family:var(--px);font-size:12px;letter-spacing:3px}
+.ft-logo span:nth-child(1){color:var(--red)}.ft-logo span:nth-child(2){color:var(--yellow)}
+.ft-logo span:nth-child(3){color:var(--green)}.ft-logo span:nth-child(4){color:var(--blue)}
+.ft-logo span:nth-child(5){color:var(--purple)}.ft-logo span:nth-child(6){color:var(--pink)}
+.ft-links{display:flex;gap:18px;list-style:none}
+.ft-links a{font-family:var(--px);font-size:6px;color:rgba(255,255,255,.3);text-decoration:none;transition:color .15s}
+.ft-links a:hover{color:var(--yellow)}
+.ft-cp{font-family:var(--px);font-size:5px;color:rgba(255,255,255,.18)}
+
+/* ─── AUTH PAGES ─── */
+.auth-wrap{min-height:calc(100vh - 56px);display:flex;align-items:stretch;background:#fff}
+.auth-left{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 48px;position:relative;overflow:hidden}
+.auth-right{width:420px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 40px;border-left:3px solid var(--ink)}
+
+/* left panel bg variations */
+.login-left{background:linear-gradient(135deg,#fff0f7 0%,#f0e8ff 50%,#e8f8ff 100%)}
+.signup-left{background:linear-gradient(135deg,#e8fff8 0%,#e8f0ff 50%,#fff0f7 100%)}
+
+.auth-shapes{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.ash{position:absolute;border:3px solid var(--ink)}
+.ash1{width:100px;height:100px;background:var(--yellow);top:6%;left:5%;transform:rotate(12deg);box-shadow:4px 4px 0 var(--ink);animation:shFloat 5s ease-in-out infinite}
+.ash2{width:65px;height:65px;background:var(--green);top:10%;right:8%;border-radius:50%;box-shadow:3px 3px 0 var(--ink);animation:shFloat 6s ease-in-out 1s infinite}
+.ash3{width:50px;height:50px;background:var(--pink);bottom:14%;left:8%;box-shadow:3px 3px 0 var(--ink);transform:rotate(-8deg);animation:shFloat 7s ease-in-out 2s infinite}
+.ash4{width:80px;height:80px;background:var(--blue);bottom:10%;right:6%;border-radius:50% 0;box-shadow:4px 4px 0 var(--ink);animation:shFloat 5.5s ease-in-out .5s infinite}
+.ash5{width:40px;height:40px;background:var(--red);top:50%;left:3%;border-radius:50%;box-shadow:3px 3px 0 var(--ink);animation:shFloat 8s ease-in-out 3s infinite}
+.ash1s{width:90px;height:90px;background:var(--green);top:6%;left:5%;transform:rotate(-8deg);box-shadow:4px 4px 0 var(--ink);animation:shFloat 5s ease-in-out infinite}
+.ash2s{width:60px;height:60px;background:var(--purple);top:10%;right:6%;box-shadow:3px 3px 0 var(--ink);animation:shFloat 6s ease-in-out 1s infinite}
+.ash3s{width:55px;height:55px;background:var(--yellow);bottom:14%;left:6%;border-radius:50%;box-shadow:3px 3px 0 var(--ink);animation:shFloat 7s ease-in-out 2s infinite}
+.ash4s{width:75px;height:75px;background:var(--pink);bottom:10%;right:7%;transform:rotate(15deg);box-shadow:4px 4px 0 var(--ink);animation:shFloat 5.5s ease-in-out .5s infinite}
+
+.auth-brand{position:relative;z-index:2;text-align:center}
+.auth-logo-row{display:flex;justify-content:center;gap:4px;margin-bottom:20px}
+.al{font-family:var(--px);font-size:clamp(28px,5vw,52px);border:3px solid var(--ink);
+  width:clamp(38px,6vw,62px);text-align:center;line-height:1;padding:6px 2px 4px;
+  box-shadow:4px 4px 0 var(--ink);animation:bop 2s ease-in-out infinite}
+.al:nth-child(2){animation-delay:.1s}.al:nth-child(3){animation-delay:.2s}.al:nth-child(4){animation-delay:.3s}.al:nth-child(5){animation-delay:.4s}.al:nth-child(6){animation-delay:.5s}
+.auth-tagline{font-family:var(--px);font-size:8px;color:var(--dim);letter-spacing:2px;line-height:2;margin-bottom:16px}
+.auth-desc{font-family:var(--bd);font-size:15px;color:var(--ink2);font-weight:800;line-height:1.7;max-width:340px}
+
+/* perks */
+.auth-perks{margin-top:32px;display:flex;flex-direction:column;gap:10px;width:100%;max-width:340px}
+.perk{display:flex;align-items:center;gap:12px;background:#fff;border:2px solid var(--ink);padding:10px 14px;box-shadow:3px 3px 0 var(--ink)}
+.perk-ico{font-size:18px;flex-shrink:0}
+.perk-txt{font-family:var(--px);font-size:7px;color:var(--ink);line-height:1.8}
+
+/* form panel */
+.auth-form-wrap{width:100%}
+.auth-form-title{font-family:var(--px);font-size:14px;color:var(--ink);margin-bottom:6px;line-height:1.8}
+.auth-form-sub{font-family:var(--bd);font-size:14px;color:var(--dim);margin-bottom:28px;font-weight:700}
+
+.form-grp{margin-bottom:16px}
+.form-lbl{font-family:var(--px);font-size:7px;color:var(--ink);display:block;margin-bottom:6px;letter-spacing:1px}
+.form-inp{width:100%;border:2px solid var(--ink);padding:11px 13px;font-family:var(--mn);font-size:13px;color:var(--ink);outline:none;background:#fff;transition:border-color .15s;font-weight:700}
+.form-inp:focus{border-color:var(--purple);box-shadow:3px 3px 0 var(--purple)}
+.form-inp::placeholder{color:#bbb;font-weight:400}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+
+.form-check{display:flex;align-items:flex-start;gap:8px;margin-bottom:20px}
+.form-check input{width:16px;height:16px;border:2px solid var(--ink);appearance:none;cursor:pointer;flex-shrink:0;margin-top:1px;position:relative}
+.form-check input:checked{background:var(--purple)}
+.form-check input:checked::after{content:'✓';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:10px;color:#fff;font-weight:700}
+.form-check-lbl{font-family:var(--bd);font-size:13px;color:var(--dim);font-weight:700;line-height:1.5}
+.form-check-lbl a{color:var(--purple);text-decoration:none}
+.form-check-lbl a:hover{text-decoration:underline}
+
+.form-forgot{font-family:var(--px);font-size:6px;color:var(--purple);text-decoration:none;display:block;text-align:right;margin-top:-10px;margin-bottom:20px;letter-spacing:1px}
+.form-forgot:hover{color:var(--pink)}
+
+.form-submit{width:100%;font-family:var(--px);font-size:9px;padding:13px;border:2px solid var(--ink);cursor:pointer;color:#fff;letter-spacing:1px;box-shadow:4px 4px 0 var(--ink);transition:all .1s;margin-bottom:16px}
+.form-submit:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 var(--ink)}
+.form-submit:active{transform:translate(3px,3px);box-shadow:1px 1px 0 var(--ink)}
+
+.divider{display:flex;align-items:center;gap:10px;margin-bottom:16px}
+.div-line{flex:1;height:1px;background:#e0d0f0}
+.div-txt{font-family:var(--px);font-size:6px;color:var(--dim);white-space:nowrap}
+
+.social-btns{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:20px}
+.soc-btn{font-family:var(--px);font-size:6px;border:2px solid var(--ink);padding:10px 8px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;transition:all .1s;background:#fff;box-shadow:2px 2px 0 var(--ink)}
+.soc-btn:hover{transform:translate(-1px,-1px);box-shadow:3px 3px 0 var(--ink)}
+.soc-ico{font-size:14px}
+
+.switch-link{font-family:var(--px);font-size:7px;text-align:center;color:var(--dim);letter-spacing:1px;line-height:2}
+.switch-link a{color:var(--purple);cursor:pointer;text-decoration:none}
+.switch-link a:hover{color:var(--pink);text-decoration:underline}
+
+.avatar-pick{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:4px}
+.ava-opt{width:40px;height:40px;border:2px solid #e0d0f0;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:20px;transition:all .15s;background:#fff}
+.ava-opt:hover,.ava-opt.sel{border-color:var(--purple);border-width:2px;box-shadow:2px 2px 0 var(--purple)}
+.ava-opt.sel{background:#f5eeff}
+
+.strength{height:4px;border:1px solid var(--ink);margin-top:6px;display:flex;gap:2px;overflow:hidden}
+.str-bar{flex:1;background:#f0e8ff;transition:background .3s}
+
+/* progress dots for signup */
+.prog-dots{display:flex;justify-content:center;gap:8px;margin-bottom:28px}
+.pdot{width:10px;height:10px;border:2px solid var(--ink);cursor:pointer}
+.pdot.on{background:var(--purple)}
+.pdot.done{background:var(--green)}
+
+@media(max-width:900px){
+  .nav-links{display:none}
+  .site-nav{padding:0 16px}
+  .sec{padding:56px 20px}
+  .map-grid,.lb-grid,.feat-grid{grid-template-columns:1fr}
+  .world-grid{grid-template-columns:1fr 1fr}
+  .steps{grid-template-columns:1fr 1fr}
+  .stat-strip{flex-wrap:wrap}
+  .auth-wrap{flex-direction:column}
+  .auth-left{min-height:300px;padding:40px 24px}
+  .auth-right{width:100%;border-left:none;border-top:3px solid var(--ink);padding:40px 24px}
+  .form-row{grid-template-columns:1fr}
+}
+@media(max-width:580px){
+  .feat-grid,.world-grid,.steps{grid-template-columns:1fr}
+  .title-row{gap:3px}
+  .tl{width:clamp(38px,13vw,56px);font-size:clamp(30px,10vw,50px)}
+}
+</style>
+</head>
+<body>
+<div class="checker"></div>
+
+<!-- GLOBAL NAV -->
+<nav class="site-nav">
+  <div class="logo" onclick="showPage('landing')" style="cursor:pointer">
+    <span>V</span><span>O</span><span>R</span><span>T</span><span>E</span><span>X</span>
+  </div>
+  <ul class="nav-links">
+    <li><a href="#" onclick="showPage('landing');return false">HOME</a></li>
+    <li><a href="#">GAMEPLAY</a></li>
+    <li><a href="#">WORLDS</a></li>
+    <li><a href="#">RANKS</a></li>
+  </ul>
+  <div class="nav-r">
+    <div class="hearts"><div class="h"></div><div class="h"></div><div class="h"></div></div>
+    <button class="nbtn nbtn-log" onclick="showPage('login')">LOG IN</button>
+    <button class="nbtn nbtn-play" onclick="showPage('signup')">▶ SIGN UP</button>
+  </div>
+</nav>
+
+<!-- ══════════════ LANDING PAGE ══════════════ -->
+<div id="page-landing" class="page active">
+
+<section class="hero">
+  <div class="hero-shapes">
+    <div class="sh sh1"></div><div class="sh sh2"></div><div class="sh sh3"></div>
+    <div class="sh sh4"></div><div class="sh sh5"></div><div class="sh sh6"></div>
+  </div>
+  <div class="hero-c">
+    <div class="eyebrow"><div class="blink"></div>OPEN BETA — PLAY FREE NOW<div class="blink"></div></div>
+    <div class="title-row">
+      <div class="tl tl-v">V</div><div class="tl tl-o">O</div><div class="tl tl-r">R</div>
+      <div class="tl tl-t">T</div><div class="tl tl-e">E</div><div class="tl tl-x">X</div>
+    </div>
+    <p class="hero-sub">▶ FPV METAVERSE · WALK · TALK · BUILD · DOMINATE ◀</p>
+    <p class="hero-desc">A pixel-perfect multiplayer world where your avatar is always live.<br/>Like Gather Town or ZEP — but built for real gamers.</p>
+    <div class="hero-btns">
+      <button class="pbtn pb-r" onclick="showPage('signup')">▶ PLAY FREE</button>
+      <button class="pbtn pb-y">★ BUILD WORLD</button>
+      <button class="pbtn pb-g">◈ WATCH TRAILER</button>
+      <button class="pbtn pb-p" onclick="showPage('login')">↩ LOG IN</button>
+    </div>
+    <div class="stat-strip">
+      <div class="ss"><div class="ss-bar" style="background:var(--red)"></div><span class="ss-n" style="color:var(--red)">24,891</span><span class="ss-l">ONLINE NOW</span></div>
+      <div class="ss"><div class="ss-bar" style="background:var(--green)"></div><span class="ss-n" style="color:var(--green)">183</span><span class="ss-l">WORLDS LIVE</span></div>
+      <div class="ss"><div class="ss-bar" style="background:var(--blue)"></div><span class="ss-n" style="color:var(--blue)">8ms</span><span class="ss-l">AVG PING</span></div>
+      <div class="ss"><div class="ss-bar" style="background:var(--purple)"></div><span class="ss-n" style="color:var(--purple)">LV.99</span><span class="ss-l">MAX RANK</span></div>
+    </div>
+  </div>
+</section>
+
+<div class="mq mq1"><div class="mqi">
+  <span>★ SPATIAL AUDIO</span><span class="sep"> /// </span><span>▶ 24K ONLINE</span><span class="sep"> /// </span><span>⚡ 8MS PING</span><span class="sep"> /// </span><span>★ FPV AVATAR</span><span class="sep"> /// </span><span>▶ BUILD FREE</span><span class="sep"> /// </span><span>⚡ PROXIMITY VOICE</span><span class="sep"> /// </span><span>★ MINI-GAMES</span><span class="sep"> /// </span>
+  <span>★ SPATIAL AUDIO</span><span class="sep"> /// </span><span>▶ 24K ONLINE</span><span class="sep"> /// </span><span>⚡ 8MS PING</span><span class="sep"> /// </span><span>★ FPV AVATAR</span><span class="sep"> /// </span><span>▶ BUILD FREE</span><span class="sep"> /// </span><span>⚡ PROXIMITY VOICE</span><span class="sep"> /// </span><span>★ MINI-GAMES</span><span class="sep"> /// </span>
+</div></div>
+
+<!-- MAP -->
+<section class="sec map-sec">
+  <span class="stag" style="color:var(--purple)">// GAMEPLAY</span>
+  <div class="stitle">NAVIGATE YOUR <em style="color:var(--red)">PIXEL WORLD</em></div>
+  <div class="map-grid">
+    <div class="pmap">
+      <div class="pm-h" style="background:var(--purple)">
+        <span class="pm-ht">▶ WORLD MAP — VORTEX-01</span>
+        <div class="pm-dots"><div class="pd" style="background:var(--red)"></div><div class="pd" style="background:var(--yellow)"></div><div class="pd" style="background:var(--green)"></div></div>
+      </div>
+      <div class="pm-g">
+        <div class="rm">LOBBY</div>
+        <div class="rm hub" style="position:relative">HUB<br/><span style="font-size:5px;font-family:var(--mn);opacity:.6">MAIN PLAZA</span><div class="ava av1"></div><div class="ava av2"></div></div>
+        <div class="rm yw">★ EVENT</div>
+        <div class="rm">SPAWN</div>
+        <div class="rm cy" style="position:relative">VOICE<div class="ava av3"></div></div>
+        <div class="rm bl">ARENA</div>
+        <div class="rm">SHOP</div>
+        <div class="rm">GALLERY</div>
+        <div class="rm">OFFICE</div>
+        <div class="rm">STAGE</div>
+        <div class="rm">LOUNGE</div>
+        <div class="rm">LAB</div>
+        <div class="rm cy">SCREEN</div>
+        <div class="rm">PORTAL</div>
+        <div class="rm yw">CUSTOM</div>
+      </div>
+      <div class="pm-f">
+        <span class="pmi">ZONE: <b>HUB</b></span><span class="pmi">PLAYERS: <b>3/50</b></span><span class="pmi">PING: <b>8ms</b></span><span class="pmi">WORLD: <b>VX-01</b></span>
+      </div>
+    </div>
+    <div class="map-info">
+      <h3>WALK AROUND.<br/>TALK TO PEOPLE.<br/>MAKE THINGS HAPPEN.</h3>
+      <p>Move your pixel avatar in real-time, trigger voice by proximity, build the world your way. Gather Town meets your favourite shooter.</p>
+      <div class="frow"><span class="fb" style="background:var(--red)">▸</span>Proximity voice — hear people as you approach</div>
+      <div class="frow"><span class="fb" style="background:var(--green)">▸</span>FPV toggle — switch to first-person camera</div>
+      <div class="frow"><span class="fb" style="background:var(--blue)">▸</span>Tile-based world builder, drag-and-drop objects</div>
+      <div class="frow"><span class="fb" style="background:var(--purple)">▸</span>Screen share, whiteboards, interactive objects</div>
+      <div class="frow"><span class="fb" style="background:var(--pink)">▸</span>Private rooms, portals, spawn zones, event stages</div>
+      <div class="frow"><span class="fb" style="background:var(--yellow);color:var(--ink)">▸</span>Emoji reactions, status bubbles, avatar emotes</div>
+      <div style="margin-top:24px;display:flex;gap:8px;flex-wrap:wrap">
+        <button class="pbtn pb-p" style="font-size:7px;padding:10px 16px">▶ TRY MAP</button>
+        <button class="pbtn pb-w" style="font-size:7px;padding:10px 16px">◈ DOCS</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="mq mq2"><div class="mqi">
+  <span>◈ SCREEN SHARE</span><span class="sep"> /// </span><span>★ WORLD BUILDER</span><span class="sep"> /// </span><span>◈ PRIVATE ROOMS</span><span class="sep"> /// </span><span>★ AVATAR SKINS</span><span class="sep"> /// </span><span>◈ LIVE EVENTS</span><span class="sep"> /// </span><span>★ LEADERBOARDS</span><span class="sep"> /// </span>
+  <span>◈ SCREEN SHARE</span><span class="sep"> /// </span><span>★ WORLD BUILDER</span><span class="sep"> /// </span><span>◈ PRIVATE ROOMS</span><span class="sep"> /// </span><span>★ AVATAR SKINS</span><span class="sep"> /// </span><span>◈ LIVE EVENTS</span><span class="sep"> /// </span><span>★ LEADERBOARDS</span><span class="sep"> /// </span>
+</div></div>
+
+<!-- FEATURES -->
+<section class="sec feat-sec">
+  <span class="stag" style="color:var(--blue)">// POWER-UPS</span>
+  <div class="stitle">CORE <em style="color:var(--blue)">SYSTEMS</em> UNLOCKED</div>
+  <div class="feat-grid">
+    <div class="fc"><div class="fc-t" style="background:var(--red)"></div><div class="fc-n">01 //</div><span class="fc-i">🎧</span><div class="fc-nm">SPATIAL AUDIO</div><div class="fc-tx">3D positional sound — voices fade with distance. Multiple zones, music layers, proximity whisper.</div></div>
+    <div class="fc"><div class="fc-t" style="background:var(--green)"></div><div class="fc-n">02 //</div><span class="fc-i">🕹️</span><div class="fc-nm">FPV CONTROL</div><div class="fc-tx">WASD movement, sprint, collision detection, FPV camera toggle. Built for speed, presence.</div></div>
+    <div class="fc"><div class="fc-t" style="background:var(--yellow)"></div><div class="fc-n">03 //</div><span class="fc-i">🏗️</span><div class="fc-nm">WORLD BUILDER</div><div class="fc-tx">Tile editor with objects, spawn logic, portals, event zones. Zero code required.</div></div>
+    <div class="fc"><div class="fc-t" style="background:var(--blue)"></div><div class="fc-n">04 //</div><span class="fc-i">⚡</span><div class="fc-nm">LOW-LATENCY SYNC</div><div class="fc-tx">WebSocket multiplayer at sub-12ms. Avatar syncs across every client instantly.</div></div>
+    <div class="fc"><div class="fc-t" style="background:var(--pink)"></div><div class="fc-n">05 //</div><span class="fc-i">🎮</span><div class="fc-nm">MINI-GAMES</div><div class="fc-tx">Drop trivia, chess, pixel art or custom games directly on the tile grid.</div></div>
+    <div class="fc"><div class="fc-t" style="background:var(--purple)"></div><div class="fc-n">06 //</div><span class="fc-i">🔐</span><div class="fc-nm">PRIVATE ZONES</div><div class="fc-tx">Passcode rooms, invite portals, role-based access per zone. Full VIP event control.</div></div>
+  </div>
+</section>
+
+<!-- WORLDS -->
+<section class="sec world-sec">
+  <span class="stag" style="color:var(--pink)">// SELECT STAGE</span>
+  <div class="stitle">CHOOSE YOUR <em style="color:var(--pink)">ARENA</em></div>
+  <div class="world-grid">
+    <div class="wc"><div class="wt wt1"><span class="wt-ico">⚔️</span></div><div class="wb"><div class="wc-tag">COMBAT ZONE</div><div class="wc-nm">BATTLE ARENA</div><div class="wc-bot"><div class="wc-pl">● 1,240 online</div><span class="pill" style="background:var(--red);color:#fff">PVP</span></div></div></div>
+    <div class="wc"><div class="wt wt2"><span class="wt-ico">💼</span></div><div class="wb"><div class="wc-tag">PRODUCTIVITY</div><div class="wc-nm">OFFICE SPACE</div><div class="wc-bot"><div class="wc-pl">● 892 online</div><span class="pill" style="background:var(--green);color:var(--ink)">WORK</span></div></div></div>
+    <div class="wc"><div class="wt wt3"><span class="wt-ico">🎉</span></div><div class="wb"><div class="wc-tag">SOCIAL HUB</div><div class="wc-nm">HANGOUT ZONE</div><div class="wc-bot"><div class="wc-pl">● 3,107 online</div><span class="pill" style="background:var(--pink);color:#fff">SOCIAL</span></div></div></div>
+    <div class="wc"><div class="wt wt4"><span class="wt-ico">📚</span></div><div class="wb"><div class="wc-tag">EDUCATION</div><div class="wc-nm">CAMPUS</div><div class="wc-bot"><div class="wc-pl">● 440 online</div><span class="pill" style="background:var(--blue);color:#fff">EDU</span></div></div></div>
+    <div class="wc"><div class="wt wt5"><span class="wt-ico">🎵</span></div><div class="wb"><div class="wc-tag">LIVE EVENT</div><div class="wc-nm">CONCERT HALL</div><div class="wc-bot"><div class="wc-pl">● 5,600 online</div><span class="pill" style="background:var(--orange);color:#fff">LIVE</span></div></div></div>
+    <div class="wc"><div class="wt wt6"><span class="wt-ico" style="color:#bbb;font-size:28px">+</span></div><div class="wb"><div class="wc-tag">YOURS TO MAKE</div><div class="wc-nm">BUILD CUSTOM</div><div class="wc-bot"><div class="wc-pl">★ Start free →</div><span class="pill" style="background:var(--yellow);color:var(--ink)">FREE</span></div></div></div>
+  </div>
+</section>
+
+<!-- HOW -->
+<section class="sec how-sec">
+  <span class="stag" style="color:var(--green)">// PROTOCOL</span>
+  <div class="stitle">SPAWN IN <em style="color:var(--green)">4 STEPS</em></div>
+  <div class="steps">
+    <div class="step"><div class="step-top" style="background:var(--red)"></div><div class="step-n" style="color:var(--red)">01</div><div class="step-nm">CREATE ACCOUNT</div><div class="step-d">Sign up free. Pick your username and base avatar skin in seconds.</div></div>
+    <div class="step"><div class="step-top" style="background:var(--yellow)"></div><div class="step-n" style="color:var(--yellow)">02</div><div class="step-nm">PICK A WORLD</div><div class="step-d">Browse servers, join via invite link, or spin up your own world in 30s.</div></div>
+    <div class="step"><div class="step-top" style="background:var(--green)"></div><div class="step-n" style="color:var(--green)">03</div><div class="step-nm">SPAWN AVATAR</div><div class="step-d">Enter the world. Walk, talk, interact. Proximity voice activates instantly.</div></div>
+    <div class="step"><div class="step-top" style="background:var(--purple)"></div><div class="step-n" style="color:var(--purple)">04</div><div class="step-nm">BUILD &amp; OWN</div><div class="step-d">Customize tiles, drop objects, invite your crew. Your world, your rules.</div></div>
+  </div>
+</section>
+
+<!-- LEADERBOARD -->
+<section class="sec lb-sec">
+  <span class="stag" style="color:var(--yellow)">// LIVE DATA</span>
+  <div class="stitle">LEADERBOARD &amp; <em style="color:var(--yellow)">EVENTS</em></div>
+  <div class="lb-grid">
+    <div class="lb-box">
+      <div class="lb-hd" style="background:var(--purple)"><span class="lb-ht">★ TOP PLAYERS</span><span class="lb-lv" style="color:var(--yellow)">● LIVE</span></div>
+      <div class="lb-rw"><div class="lb-rk" style="color:var(--yellow)">01</div><div class="lb-av" style="background:#fff9e6">XJ</div><div class="lb-nm">XEON_J</div><div class="lb-bw"><div class="lb-bf" style="width:100%;background:var(--red)"></div></div><div class="lb-sc" style="color:var(--red)">99,421</div></div>
+      <div class="lb-rw"><div class="lb-rk" style="color:#aaa">02</div><div class="lb-av" style="background:#eafff8">PX</div><div class="lb-nm">PIXELWOLF</div><div class="lb-bw"><div class="lb-bf" style="width:86%;background:var(--green)"></div></div><div class="lb-sc" style="color:var(--green)">85,200</div></div>
+      <div class="lb-rw"><div class="lb-rk" style="color:var(--pink)">03</div><div class="lb-av" style="background:#ffedf5">N7</div><div class="lb-nm">NULL_7</div><div class="lb-bw"><div class="lb-bf" style="width:74%;background:var(--pink)"></div></div><div class="lb-sc" style="color:var(--pink)">73,050</div></div>
+      <div class="lb-rw"><div class="lb-rk" style="color:var(--dim)">04</div><div class="lb-av" style="background:#e6f4ff">VR</div><div class="lb-nm">VORTEX_R</div><div class="lb-bw"><div class="lb-bf" style="width:61%;background:var(--blue)"></div></div><div class="lb-sc" style="color:var(--blue)">60,880</div></div>
+      <div class="lb-rw"><div class="lb-rk" style="color:var(--dim)">05</div><div class="lb-av" style="background:#f5eeff">GX</div><div class="lb-nm">GHOST_X</div><div class="lb-bw"><div class="lb-bf" style="width:50%;background:var(--purple)"></div></div><div class="lb-sc" style="color:var(--purple)">49,200</div></div>
+      <div class="lb-rw" style="border-bottom:none"><div class="lb-rk" style="color:var(--dim)">06</div><div class="lb-av" style="background:#fff9e6">M0</div><div class="lb-nm">MOCHI_0</div><div class="lb-bw"><div class="lb-bf" style="width:40%;background:var(--yellow)"></div></div><div class="lb-sc" style="color:var(--orange)">40,510</div></div>
+    </div>
+    <div class="lb-box">
+      <div class="ev-hd" style="background:var(--yellow)"><span class="ev-ht" style="color:var(--ink)">⚡ LIVE EVENTS &amp; SCHEDULE</span></div>
+      <div class="ev-rw"><div class="ev-dot ev-live" style="background:var(--red)"></div><div class="ev-nm">BATTLE ROYALE — ARENA-01</div><span class="ev-bg" style="background:var(--red);color:#fff">LIVE</span></div>
+      <div class="ev-rw"><div class="ev-dot ev-live" style="background:var(--pink)"></div><div class="ev-nm">PIXEL ART CONTEST</div><span class="ev-bg" style="background:var(--pink);color:#fff">LIVE</span></div>
+      <div class="ev-rw"><div class="ev-dot" style="background:var(--green)"></div><div class="ev-nm">TEAM DEATHMATCH</div><span class="ev-bg" style="background:var(--green);color:var(--ink)">IN 2H</span></div>
+      <div class="ev-rw"><div class="ev-dot" style="background:var(--blue)"></div><div class="ev-nm">VORTEX CONCERT — HALL C</div><span class="ev-bg" style="background:var(--blue);color:#fff">IN 4H</span></div>
+      <div class="ev-rw"><div class="ev-dot" style="background:var(--purple)"></div><div class="ev-nm">WORLD BUILDER SHOWDOWN</div><span class="ev-bg" style="background:var(--purple);color:#fff">TOMORROW</span></div>
+      <div class="ev-rw" style="border-bottom:none"><div class="ev-dot" style="background:#e0e0e0"></div><div class="ev-nm" style="color:#bbb">TRIVIA NIGHT — LOBBY-02</div><span class="ev-bg" style="background:#eee;color:#aaa">ENDED</span></div>
+      <div class="ev-ft"><button class="pbtn pb-y" style="width:100%;font-size:7px;padding:10px" onclick="showPage('login')">▶ VIEW ALL EVENTS</button></div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-sec">
+  <div class="cta-grad"></div><div class="cta-dots"></div>
+  <div class="cta-c">
+    <div class="cta-tl">READY PLAYER ONE?<br/>YOUR WORLD AWAITS.</div>
+    <p class="cta-sb">FREE TO START · NO DOWNLOAD · RUNS IN BROWSER</p>
+    <div class="cta-row">
+      <input class="cta-inp" type="text" placeholder="ENTER YOUR USERNAME..."/>
+      <button class="cta-b" onclick="showPage('signup')">▶ SPAWN IN</button>
+    </div>
+    <p class="cta-nt">// NO CREDIT CARD · FREE FOREVER FOR PUBLIC WORLDS</p>
+  </div>
+</section>
+
+<footer class="ft">
+  <div class="ft-logo"><span>V</span><span>O</span><span>R</span><span>T</span><span>E</span><span>X</span></div>
+  <ul class="ft-links"><li><a href="#">DOCS</a></li><li><a href="#">API</a></li><li><a href="#">DISCORD</a></li><li><a href="#">GITHUB</a></li><li><a href="#">CAREERS</a></li><li><a href="#">PRIVACY</a></li></ul>
+  <div class="ft-cp">© 2026 VORTEX METAVERSE — v2.4.1</div>
+</footer>
+</div>
+
+<!-- ══════════════ LOGIN PAGE ══════════════ -->
+<div id="page-login" class="page">
+<div class="auth-wrap">
+  <div class="auth-left login-left">
+    <div class="auth-shapes">
+      <div class="ash ash1"></div><div class="ash ash2"></div>
+      <div class="ash ash3"></div><div class="ash ash4"></div><div class="ash ash5"></div>
+    </div>
+    <div class="auth-brand">
+      <div class="auth-logo-row">
+        <div class="al tl-v">V</div><div class="al tl-o">O</div><div class="al tl-r">R</div>
+        <div class="al tl-t">T</div><div class="al tl-e">E</div><div class="al tl-x">X</div>
+      </div>
+      <p class="auth-tagline">▶ FPV METAVERSE · PLAY FREE ◀</p>
+      <p class="auth-desc">Welcome back, player. Your world is waiting — jump back in and keep building.</p>
+      <div class="auth-perks">
+        <div class="perk"><span class="perk-ico">🎧</span><span class="perk-txt">SPATIAL AUDIO ACTIVE</span></div>
+        <div class="perk"><span class="perk-ico">⚡</span><span class="perk-txt">8MS LOW-LATENCY SYNC</span></div>
+        <div class="perk"><span class="perk-ico">🏗️</span><span class="perk-txt">YOUR WORLDS ARE SAVED</span></div>
+        <div class="perk"><span class="perk-ico">★</span><span class="perk-txt">RANK PROGRESS PRESERVED</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="auth-right">
+    <div class="auth-form-wrap">
+      <div class="auth-form-title">WELCOME BACK</div>
+      <p class="auth-form-sub">Log in to continue your adventure</p>
+
+      <div class="social-btns">
+        <button class="soc-btn"><span class="soc-ico">G</span><span style="font-family:var(--px);font-size:6px">GOOGLE</span></button>
+        <button class="soc-btn"><span class="soc-ico">D</span><span style="font-family:var(--px);font-size:6px">DISCORD</span></button>
+      </div>
+
+      <div class="divider"><div class="div-line"></div><span class="div-txt">OR LOGIN WITH EMAIL</span><div class="div-line"></div></div>
+
+      <div class="form-grp">
+        <label class="form-lbl">USERNAME / EMAIL</label>
+        <input class="form-inp" type="text" placeholder="xeon_player@vortex.gg"/>
+      </div>
+      <div class="form-grp">
+        <label class="form-lbl">PASSWORD</label>
+        <input class="form-inp" type="password" placeholder="••••••••••"/>
+      </div>
+      <a href="#" class="form-forgot">FORGOT PASSWORD?</a>
+
+      <div class="form-check">
+        <input type="checkbox" id="rem" checked/>
+        <label for="rem" class="form-check-lbl">Remember me on this device</label>
+      </div>
+
+      <button class="form-submit" style="background:var(--purple)">▶ LOG IN</button>
+
+      <div class="switch-link">
+        DON'T HAVE AN ACCOUNT?
+        <a onclick="showPage('signup')">CREATE ONE FREE</a>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════ SIGNUP PAGE ══════════════ -->
+<div id="page-signup" class="page">
+<div class="auth-wrap">
+  <div class="auth-left signup-left">
+    <div class="auth-shapes">
+      <div class="ash ash1s"></div><div class="ash ash2s"></div>
+      <div class="ash ash3s"></div><div class="ash ash4s"></div>
+    </div>
+    <div class="auth-brand">
+      <div class="auth-logo-row">
+        <div class="al tl-v">V</div><div class="al tl-o">O</div><div class="al tl-r">R</div>
+        <div class="al tl-t">T</div><div class="al tl-e">E</div><div class="al tl-x">X</div>
+      </div>
+      <p class="auth-tagline">▶ JOIN THE METAVERSE FREE ◀</p>
+      <p class="auth-desc">Build worlds, meet players, host events. Your pixel universe starts here — free forever.</p>
+      <div class="auth-perks">
+        <div class="perk"><span class="perk-ico">🌍</span><span class="perk-txt">1 FREE WORLD INSTANTLY</span></div>
+        <div class="perk"><span class="perk-ico">🎨</span><span class="perk-txt">10 AVATAR SKINS UNLOCKED</span></div>
+        <div class="perk"><span class="perk-ico">🏆</span><span class="perk-txt">JOIN GLOBAL LEADERBOARD</span></div>
+        <div class="perk"><span class="perk-ico">🎮</span><span class="perk-txt">ALL MINI-GAMES INCLUDED</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="auth-right">
+    <div class="auth-form-wrap">
+      <div class="prog-dots">
+        <div class="pdot done" title="Account"></div>
+        <div class="pdot on" title="Avatar"></div>
+        <div class="pdot" title="World"></div>
+      </div>
+
+      <div class="auth-form-title">CREATE ACCOUNT</div>
+      <p class="auth-form-sub">Join 24,891 players in the metaverse</p>
+
+      <div class="social-btns">
+        <button class="soc-btn"><span class="soc-ico">G</span><span style="font-family:var(--px);font-size:6px">GOOGLE</span></button>
+        <button class="soc-btn"><span class="soc-ico">D</span><span style="font-family:var(--px);font-size:6px">DISCORD</span></button>
+      </div>
+
+      <div class="divider"><div class="div-line"></div><span class="div-txt">OR SIGN UP WITH EMAIL</span><div class="div-line"></div></div>
+
+      <div class="form-row">
+        <div class="form-grp">
+          <label class="form-lbl">FIRST NAME</label>
+          <input class="form-inp" type="text" placeholder="Player"/>
+        </div>
+        <div class="form-grp">
+          <label class="form-lbl">LAST NAME</label>
+          <input class="form-inp" type="text" placeholder="One"/>
+        </div>
+      </div>
+
+      <div class="form-grp">
+        <label class="form-lbl">USERNAME</label>
+        <input class="form-inp" type="text" placeholder="xeon_destroyer" id="uname"/>
+      </div>
+
+      <div class="form-grp">
+        <label class="form-lbl">EMAIL ADDRESS</label>
+        <input class="form-inp" type="email" placeholder="you@vortex.gg"/>
+      </div>
+
+      <div class="form-grp">
+        <label class="form-lbl">PASSWORD</label>
+        <input class="form-inp" type="password" placeholder="••••••••••" id="pwd" oninput="updateStrength(this.value)"/>
+        <div class="strength">
+          <div class="str-bar" id="s1"></div><div class="str-bar" id="s2"></div>
+          <div class="str-bar" id="s3"></div><div class="str-bar" id="s4"></div>
+        </div>
+      </div>
+
+      <div class="form-grp">
+        <label class="form-lbl">PICK YOUR AVATAR</label>
+        <div class="avatar-pick">
+          <div class="ava-opt sel" onclick="selAva(this)">🤖</div>
+          <div class="ava-opt" onclick="selAva(this)">🦊</div>
+          <div class="ava-opt" onclick="selAva(this)">👾</div>
+          <div class="ava-opt" onclick="selAva(this)">🧙</div>
+          <div class="ava-opt" onclick="selAva(this)">🐉</div>
+          <div class="ava-opt" onclick="selAva(this)">💀</div>
+        </div>
+      </div>
+
+      <div class="form-check">
+        <input type="checkbox" id="terms"/>
+        <label for="terms" class="form-check-lbl">I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a></label>
+      </div>
+
+      <button class="form-submit" style="background:var(--green);color:var(--ink)">▶ CREATE ACCOUNT FREE</button>
+
+      <div class="switch-link">
+        ALREADY HAVE AN ACCOUNT?
+        <a onclick="showPage('login')">LOG IN HERE</a>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<script>
+function showPage(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  window.scrollTo(0,0);
+}
+function selAva(el){
+  document.querySelectorAll('.ava-opt').forEach(a=>a.classList.remove('sel'));
+  el.classList.add('sel');
+}
+function updateStrength(val){
+  const bars=[document.getElementById('s1'),document.getElementById('s2'),document.getElementById('s3'),document.getElementById('s4')];
+  const colors=['#ff4d6d','#ffd166','#06d6a0','#9b5de5'];
+  let score=0;
+  if(val.length>=6)score++;
+  if(val.length>=10)score++;
+  if(/[A-Z]/.test(val)&&/[0-9]/.test(val))score++;
+  if(/[^A-Za-z0-9]/.test(val))score++;
+  bars.forEach((b,i)=>{b.style.background=i<score?colors[Math.min(score-1,3)]:'#f0e8ff'});
+}
+</script>
+</body>
+</html>

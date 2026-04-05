@@ -19,7 +19,14 @@ export class SpaceManager {
 
   static broadcastUsers(spaceId: string) {
     const users = Array.from(this.spaces.get(spaceId) || []).map(
-      u => u.sessionId
+      u => ({
+        sessionId: u.sessionId,
+        x: u.x,
+        y: u.y,
+        username: u.username,
+        character: u.character,
+        anim: u.anim
+      })
     );
 
     for (const user of this.spaces.get(spaceId) || []) {
@@ -30,13 +37,14 @@ export class SpaceManager {
     }
   }
 
-  static broadcastMovement(spaceId: string, movedUser: User) {
+  static broadcastMovement(spaceId: string, movedUser: User, anim?: string) {
     for (const user of this.spaces.get(spaceId) || []) {
       user.ws.send(JSON.stringify({
         type: "PLAYER_MOVED",
         sessionId: movedUser.sessionId,
         x: movedUser.x,
-        y: movedUser.y
+        y: movedUser.y,
+        anim
       }));
     }
     this.checkProximity(spaceId, movedUser);  

@@ -1,4 +1,5 @@
 import * as Phaser from "phaser";
+import { officeMap, eventMap, TILE_SIZE } from "./maps";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 interface RemotePlayer {
@@ -7,8 +8,6 @@ interface RemotePlayer {
 }
 
 // ── Constants ─────────────────────────────────────────────────────────────────
-const MAP_W  = 2560;
-const MAP_H  = 1920;   // natural size of the office_map.png
 const SPEED  = 3;
 const WS_URL = "ws://localhost:3001";
 
@@ -20,16 +19,16 @@ const C = {
   neonAmber:  0xfbbf24,
   chairSeat:  0x5b21b6,
   chairBack:  0x4c1d95,
+  wall:       0x0f172a,
+  floor:      0x1e293b,
+  table:      0x78350f,
+  plant:      0x166534,
+  gameObject: 0x0ea5e9,
+  stage:      0xa21caf
 };
 
-// ── PreloadScene ──────────────────────────────────────────────────────────────
 export class PreloadScene extends Phaser.Scene {
   constructor() { super({ key: "PreloadScene" }); }
-
-  preload() {
-    // Load the office map image
-    this.load.image("officeMap", "/office_map.png");
-  }
 
   create() {
     const { width, height } = this.scale;
@@ -44,7 +43,7 @@ export class PreloadScene extends Phaser.Scene {
 
     this.tweens.add({
       targets: fill,
-      duration: 900,
+      duration: 300,
       ease: "Cubic.easeInOut",
       onUpdate: (t) => { fill.width = 320 * t.progress; },
       onComplete: () => this.scene.start("GameScene"),
@@ -52,7 +51,6 @@ export class PreloadScene extends Phaser.Scene {
   }
 }
 
-// ── GameScene ─────────────────────────────────────────────────────────────────
 export class GameScene extends Phaser.Scene {
   private ws!: WebSocket;
   private sessionId = "";
@@ -60,8 +58,8 @@ export class GameScene extends Phaser.Scene {
 
   private player!:      Phaser.GameObjects.Container;
   private playerName  = "";
-  private px = MAP_W / 2;
-  private py = MAP_H / 2;
+  private px = 200;
+  private py = 200;
 
   private cursors!: Phaser.Types.Input.Keyboard.CursorKeys;
   private wasd!:    Record<string, Phaser.Input.Keyboard.Key>;
@@ -70,12 +68,13 @@ export class GameScene extends Phaser.Scene {
   private nearbyPlayers: Set<string> = new Set();
   private tickCount = 0;
 
-  constructor() { super({ key: "GameScene" }); }
+  private currentMapName: 'office' | 'event' = 'office';
+  private mapTilesLayer!: Phaser.GameObjects.Container;
+  private mapBoundsW = 0;
+  private mapBoundsH = 0;
+  private colliders: Phaser.Geom.Rectangle[] = [];
 
-  // ── Preload ────────────────────────────────────────────────────────────────
-  preload() {
-    this.load.image("officeMap", "/office_map.png");
-  }
+  constructor() { super({ key: "GameScene" }); }
 
   init(d: { name?: string; spaceId?: string }) {
     this.playerName = d.name ?? "You";
@@ -84,125 +83,138 @@ export class GameScene extends Phaser.Scene {
     this.nearbyPlayers.clear();
     this.tickCount = 0;
     this.sessionId = "";
-    this.px = MAP_W / 2;
-    this.py = MAP_H / 2;
+    this.px = 400;
+    this.py = 400;
   }
 
   create() {
-    // ── World bounds ────────────────────────────────────────────────────────
-    this.cameras.main.setBounds(0, 0, MAP_W, MAP_H);
+    this.mapTilesLayer = this.add.container(0, 0);
+    this.loadMapData(this.currentMapName === 'office' ? officeMap : eventMap);
 
-    // ── Background: the rendered office map image ───────────────────────────
-    const map = this.add.image(0, 0, "officeMap").setOrigin(0, 0);
-    // Scale to fill the world
-    map.setScale(MAP_W / map.width, MAP_H / map.height);
-    map.setDepth(0);
-
-    // ── Dark overlay to deepen the atmosphere ──────────────────────────────
-    const overlay = this.add.rectangle(0, 0, MAP_W, MAP_H, 0x0a0f1a, 0.22).setOrigin(0, 0).setDepth(1);
-
-    // ── Room labels (floating above the image) ─────────────────────────────
-    this.addRoomLabels();
-
-    // ── Neon accent lines (room dividers, corridors) ───────────────────────
-    this.addNeonAccents();
-
-    // ── Player ─────────────────────────────────────────────────────────────
     this.buildPlayer();
-
-    // ── Input ───────────────────────────────────────────────────────────────
     this.setupInput();
-
-    // ── WebSocket ───────────────────────────────────────────────────────────
     this.connectWS();
+    this.createMapSwitchUI();
 
-    // ── Camera ─────────────────────────────────────────────────────────────
     this.cameras.main.startFollow(this.player, true, 0.08, 0.08);
     this.cameras.main.setZoom(1.5);
-
     this.updateHUD(`⚡ ${this.playerName} · ${this.spaceId}`);
   }
 
-  // ── Room labels ────────────────────────────────────────────────────────────
-  private addRoomLabels() {
-    const labelStyle = {
-      fontSize: "11px",
-      color: "#38bdf8",
-      fontFamily: "monospace",
-      backgroundColor: "#0f172acc",
-      padding: { x: 6, y: 3 },
+  private loadMapData(mapData: string[][]) {
+    this.mapTilesLayer.removeAll(true);
+    this.colliders = [];
+    
+    this.mapBoundsW = mapData[0].length * TILE_SIZE;
+    this.mapBoundsH = mapData.length * TILE_SIZE;
+    
+    this.cameras.main.setBounds(0, 0, this.mapBoundsW, this.mapBoundsH);
+    
+    const floorBg = this.add.rectangle(0, 0, this.mapBoundsW, this.mapBoundsH, C.floor).setOrigin(0, 0);
+    this.mapTilesLayer.add(floorBg);
+    
+    for (let y = 0; y < mapData.length; y++) {
+      for (let x = 0; x < mapData[y].length; x++) {
+        const symbol = mapData[y][x];
+        const tx = x * TILE_SIZE;
+        const ty = y * TILE_SIZE;
+        
+        let color = -1;
+        let isSolid = false;
+        
+        switch (symbol) {
+          case 'W': color = C.wall; isSolid = true; break;
+          case 'T': color = C.table; isSolid = true; break;
+          case 'C': color = C.chairBack; break;
+          case 'S': color = C.neonBlue; break;
+          case 'P': color = C.plant; isSolid = true; break;
+          case 'G': color = C.gameObject; isSolid = true; break;
+          case 'ST': color = C.stage; break;
+          case '0': 
+          default:
+            continue; 
+        }
+        
+        if (color !== -1) {
+          const rect = this.add.rectangle(tx, ty, TILE_SIZE, TILE_SIZE, color).setOrigin(0, 0);
+          rect.setStrokeStyle(1, 0x000000, 0.3);
+          this.mapTilesLayer.add(rect);
+        }
+        
+        if (symbol === 'ST') {
+           const label = this.add.text(tx + 4, ty + 8, "STAGE", { fontSize: "8px", color: "#fff", fontFamily: "monospace" });
+           this.mapTilesLayer.add(label);
+        }
+        
+        if (isSolid) {
+          this.colliders.push(new Phaser.Geom.Rectangle(tx, ty, TILE_SIZE, TILE_SIZE));
+        }
+      }
+    }
+  }
+
+  private switchMap() {
+    this.currentMapName = this.currentMapName === 'office' ? 'event' : 'office';
+    const newMapData = this.currentMapName === 'office' ? officeMap : eventMap;
+    
+    this.loadMapData(newMapData);
+    
+    // Reposition player
+    this.px = 400;
+    this.py = 400;
+    this.player.setPosition(this.px, this.py);
+    this.cameras.main.setBounds(0, 0, this.mapBoundsW, this.mapBoundsH);
+  }
+  
+  private createMapSwitchUI() {
+    const btn = document.createElement("button");
+    btn.innerText = "Switch Map";
+    btn.style.position = "absolute";
+    btn.style.top = "20px";
+    btn.style.right = "20px";
+    btn.style.padding = "10px 15px";
+    btn.style.backgroundColor = "#4ade80";
+    btn.style.color = "#000";
+    btn.style.fontWeight = "bold";
+    btn.style.border = "none";
+    btn.style.borderRadius = "8px";
+    btn.style.cursor = "pointer";
+    btn.style.zIndex = "1000";
+    
+    btn.onclick = () => {
+      this.switchMap();
     };
-
-    const labels: [number, number, string][] = [
-      [230,  80,  "📋  Conference Room"],
-      [760,  80,  "🎤  All-Hands Hall"],
-      [1300, 80,  "📋  Board Room"],
-      [80,   520, "🔍  Focus Zone"],
-      [760,  540, "☕  Lounge & Kitchen"],
-      [1500, 440, "📋  Meeting Room"],
-      [100,  880, "🖥️  Engineering Bay"],
-      [850,  1280,"🎨  Product & Design"],
-    ];
-
-    labels.forEach(([x, y, text]) => {
-      this.add.text(x, y, text, labelStyle).setDepth(5).setAlpha(0.88);
-    });
+    
+    document.body.appendChild(btn);
+    this.events.on('shutdown', () => btn.remove());
   }
 
-  // ── Neon accent lines ──────────────────────────────────────────────────────
-  private addNeonAccents() {
-    const g = this.add.graphics().setDepth(3);
-
-    // Subtle neon corridor lines
-    g.lineStyle(2, C.neonBlue, 0.2);
-    // Vertical corridor
-    g.lineBetween(MAP_W / 2, 0, MAP_W / 2, MAP_H);
-    // Horizontal corridor
-    g.lineBetween(0, MAP_H / 2, MAP_W, MAP_H / 2);
-    // Outer border glow
-    g.lineStyle(4, C.neonPurple, 0.5);
-    g.strokeRect(4, 4, MAP_W - 8, MAP_H - 8);
-  }
-
-  // ── Avatar builder ─────────────────────────────────────────────────────────
   private makeAvatar(name: string, primary: number, secondary: number): Phaser.GameObjects.Container {
     const c = this.add.container(0, 0);
 
-    // shadow blob
     const shadow = this.add.ellipse(0, 16, 26, 8, 0x000000, 0.4);
-
-    // glow ring
     const glow = this.add.graphics();
     glow.fillStyle(primary, 0.18);
     glow.fillCircle(0, 0, 20);
 
-    // body
     const body = this.add.graphics();
-    // legs / feet
     body.fillStyle(0x1e293b);
     body.fillRoundedRect(-8, 7,  7, 10, 3);
     body.fillRoundedRect(1,  7,  7, 10, 3);
-    // torso
     body.fillStyle(secondary);
     body.fillRoundedRect(-10, -5, 20, 16, 6);
-    // collar triangle
     body.fillStyle(primary);
     body.fillTriangle(-4, -5, 4, -5, 0, 2);
-    // head skin
     body.fillStyle(0xfbbf24);
     body.fillCircle(0, -16, 11);
-    // hair
     body.fillStyle(0x1e293b);
     body.fillRoundedRect(-11, -27, 22, 13, 6);
-    // eyes
     body.fillStyle(0x0f172a);
     body.fillCircle(-4, -16, 2.2);
     body.fillCircle(4,  -16, 2.2);
-    // smile
     body.fillStyle(0x78350f);
     body.fillRoundedRect(-3, -11, 6, 2, 1);
 
-    // name badge
     const badge = this.add.text(0, -34, name, {
       fontSize: "9px",
       color: "#f1f5f9",
@@ -215,14 +227,12 @@ export class GameScene extends Phaser.Scene {
     return c;
   }
 
-  // ── Player ─────────────────────────────────────────────────────────────────
   private buildPlayer() {
     this.player = this.makeAvatar(this.playerName, C.neonBlue, 0x1e40af);
     this.player.setPosition(this.px, this.py);
     this.player.setDepth(20);
   }
 
-  // ── Remote player helpers ──────────────────────────────────────────────────
   private avatarColors = [
     { p: 0xef4444, s: 0x991b1b },
     { p: 0xf97316, s: 0x9a3412 },
@@ -243,12 +253,11 @@ export class GameScene extends Phaser.Scene {
     const idx = Math.abs(this.hashCode(sessionId)) % this.avatarColors.length;
     const { p, s } = this.avatarColors[idx];
     const container = this.makeAvatar(sessionId.slice(0, 6), p, s);
-    container.setPosition(MAP_W / 2, MAP_H / 2 - 100);
+    container.setPosition(this.mapBoundsW / 2, this.mapBoundsH / 2 - 100);
     container.setDepth(19);
     this.others.set(sessionId, { container, nameTag: sessionId });
   }
 
-  // ── Input ─────────────────────────────────────────────────────────────────
   private setupInput() {
     this.cursors = this.input.keyboard!.createCursorKeys();
     this.wasd = {
@@ -259,7 +268,6 @@ export class GameScene extends Phaser.Scene {
     };
   }
 
-  // ── WebSocket ─────────────────────────────────────────────────────────────
   private connectWS() {
     try {
       this.ws = new WebSocket(WS_URL);
@@ -308,7 +316,16 @@ export class GameScene extends Phaser.Scene {
     }
   }
 
-  // ── Update loop ────────────────────────────────────────────────────────────
+  private isColliding(nx: number, ny: number) {
+    const pBounds = new Phaser.Geom.Rectangle(nx - 10, ny - 5, 20, 10);
+    for (const c of this.colliders) {
+      if (Phaser.Geom.Intersects.RectangleToRectangle(pBounds, c)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   update() {
     let dx = 0, dy = 0;
 
@@ -318,18 +335,25 @@ export class GameScene extends Phaser.Scene {
     if (this.cursors.down.isDown  || this.wasd.down.isDown)  dy =  SPEED;
 
     if (dx || dy) {
-      this.px = Phaser.Math.Clamp(this.px + dx, 40, MAP_W - 40);
-      this.py = Phaser.Math.Clamp(this.py + dy, 40, MAP_H - 40);
-      this.player.setPosition(this.px, this.py);
+      let nextX = this.px + dx;
+      let nextY = this.py + dy;
+      
+      nextX = Phaser.Math.Clamp(nextX, 20, this.mapBoundsW - 20);
+      nextY = Phaser.Math.Clamp(nextY, 20, this.mapBoundsH - 20);
+      
+      if (!this.isColliding(nextX, nextY)) {
+         this.px = nextX;
+         this.py = nextY;
+         this.player.setPosition(this.px, this.py);
 
-      this.tickCount++;
-      if (this.tickCount % 3 === 0 && this.ws?.readyState === WebSocket.OPEN) {
-        this.ws.send(JSON.stringify({ type: "MOVE", dx, dy }));
+         this.tickCount++;
+         if (this.tickCount % 3 === 0 && this.ws?.readyState === WebSocket.OPEN) {
+           this.ws.send(JSON.stringify({ type: "MOVE", dx, dy }));
+         }
       }
     }
   }
 
-  // ── HUD helpers ────────────────────────────────────────────────────────────
   private updateHUD(text: string) {
     const el = document.getElementById("hud-text");
     if (el) el.textContent = text;

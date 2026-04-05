@@ -14,11 +14,14 @@ function generateSessionId(): string {
 export class User {
   public readonly sessionId: string;
   public spaceId: string | null = null;
-  public x = 0;
-  public y = 0;
+  public x = 500;
+  public y = 500;
+  public username = "Player";
+  public character = "nancy";
+  public anim = "nancy_down_idle";
   public ws: WebSocket;
-   Map_WIDTH = 1000;
-   Map_HEIGHT = 1000;
+   Map_WIDTH = 4000;
+   Map_HEIGHT = 4000;
 
   constructor(ws: WebSocket) {
     this.ws = ws;
@@ -42,16 +45,21 @@ export class User {
   async handleMessage(message: any) {
     switch (message.type) {
       case "JOIN_SPACE":
-        await this.joinSpace(message.spaceId);
+        await this.joinSpace(message.spaceId, message.username, message.character);
         break;
 
       case "MOVE":
-        this.move(message.dx, message.dy);
+        this.move(message.x, message.y, message.anim);
         break;
     }
   }
 
-  async joinSpace(spaceId: string) {
+  async joinSpace(spaceId: string, username?: string, character?: string) {
+    if (username) this.username = username;
+    if (character) {
+        this.character = character;
+        this.anim = `${character}_down_idle`;
+    }
     // TEMPORARY MOCK: Bypassing DB check for testing since the DB isn't running
     // const space = await prisma.space.findUnique({
     //   where: { id: spaceId },
@@ -74,12 +82,13 @@ export class User {
     }));
   }
 
-  move(dx: number, dy: number) {
-    this.x =Math.max(0, Math.min(this.x+dx ,this.Map_WIDTH));
-    this.y =Math.max(0, Math.min(this.y+dy ,this.Map_HEIGHT));
+  move(x: number, y: number, anim?: string) {
+    this.x = Math.max(0, Math.min(x, this.Map_WIDTH));
+    this.y = Math.max(0, Math.min(y, this.Map_HEIGHT));
+    if (anim) this.anim = anim;
 
     if(this.spaceId) {
-      SpaceManager.broadcastMovement(this.spaceId, this);
+      SpaceManager.broadcastMovement(this.spaceId, this, anim);
     }
   }
 

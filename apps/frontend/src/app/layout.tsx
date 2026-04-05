@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import { StoreProvider } from "./StoreProvider";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
@@ -14,8 +15,8 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" className={inter.variable} style={{ height: "100%" }}>
-      <body style={{ height: "100%", margin: 0, overflow: "hidden" }}>
-        {children}
+      <body style={{ margin: 0 }}>
+        <StoreProvider>{children}</StoreProvider>
       </body>
     </html>
   );
