@@ -1,16 +1,43 @@
 import { useAppSelector } from "../store/hooks";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const VideoCall = () => {
-    // Assuming you want to show Discord when the user is technically in a call
     const isDisconnectedFromVideoCalls = useAppSelector(
         (state) => state.webcam.isDisconnectedFromVideoCalls
     );
 
-    // Replace this with your actual Discord Server ID that has widget enabled!
-    const [discordServerId] = useState("123456789012345678");
+    const [discordServerId, setDiscordServerId] = useState("");
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchDiscordConfig = async () => {
+            try {
+                // Fetch from the new backend route
+                const res = await fetch("/api/v1/discord/config");
+                const data = await res.json();
+                if (data.guildId && data.guildId !== "your_server_id") {
+                    setDiscordServerId(data.guildId);
+                } else {
+                    // Fallback or alert the user to configure it
+                    console.warn("Discord Guild ID not configured in .env");
+                }
+            } catch (err) {
+                console.error("Failed to fetch Discord config:", err);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        fetchDiscordConfig();
+    }, []);
 
     if (isDisconnectedFromVideoCalls) return null;
+    if (isLoading) return <div>Loading Discord...</div>;
+    if (!discordServerId) return (
+        <div className="absolute left-[35px] top-[10px] z-50 bg-[#313338] text-white p-3 rounded-lg border border-red-500 w-[350px]">
+            Please configure DISCORD_GUILD_ID in your .env
+        </div>
+    );
 
     return (
         <div className="absolute left-[35px] top-[10px] z-50 flex flex-col gap-2 pointer-events-auto">
@@ -25,7 +52,7 @@ const VideoCall = () => {
                     </h3>
                 </div>
                 <p className="text-xs text-gray-300 mb-3 ml-[28px]">
-                    Click a Voice Channel below to open Discord for high-quality audio and video connection.
+                    Connect your server using the widget below.
                 </p>
                 <div className="bg-[#2b2d31] rounded-md overflow-hidden p-1">
                     <iframe 

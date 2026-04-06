@@ -4,7 +4,7 @@ import RoomSelection from "./components/RoomSelection/RoomSelection";
 import ScreenShare from "./components/ScreenShare";
 import { useState } from "react";
 import GameFooter from "./components/GameFooter";
-import { AnimatePresence } from "framer-motion";
+import { AnimatePresence } from "motion/react";
 import VideoCall from "./components/VideoCall";
 
 function App() {

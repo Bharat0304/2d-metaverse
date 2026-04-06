@@ -20,7 +20,7 @@ import {
     TooltipProvider,
     TooltipTrigger,
 } from "./ui/tooltip";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion } from "motion/react";
 import phaserGame from "../game/main";
 import { GameScene } from "../game/scenes/GameScene";
 import { toast } from "sonner";
