@@ -22,6 +22,16 @@ export class Bootstrap extends Phaser.Scene {
         this.load.animation("adam_anim", "assets/characters/adam/adam_anim.json");
 
         this.load.tilemapTiledJSON("map", "/assets/map/map.json");
+        this.load.tilemapTiledJSON("village_map", "/assets/village/village.json");
+        
+        this.load.on('loaderror', (fileObj: any) => {
+            console.error('Phaser failed to load asset:', fileObj.key, 'from', fileObj.url);
+        });
+
+        this.load.on('complete', () => {
+            console.log('Phaser preloading complete');
+        });
+
         this.load.spritesheet("chair", "assets/items/chair.png", { frameWidth: 32, frameHeight: 32 });
         this.load.spritesheet("generic", "assets/tileset/Generic.png", { frameWidth: 32, frameHeight: 32 });
         this.load.spritesheet("basement", "assets/tileset/Basement.png", { frameWidth: 32, frameHeight: 32 });
@@ -31,6 +41,17 @@ export class Bootstrap extends Phaser.Scene {
         this.load.spritesheet("vendingmachine", "assets/items/vendingmachine.png", { frameWidth: 32, frameHeight: 32 });
         this.load.spritesheet("classroom_library", "assets/tileset/Classroom_and_library.png", { frameWidth: 32, frameHeight: 32 });
         this.load.image("ground_tiles", "assets/map/FloorAndGround.png");
+        this.load.image("village_tiles", "assets/village/Serene_Village_32x32.png");
+        
+        // Load extra village assets requested by user
+        this.load.image("village_houses", "assets/village/Houses_TILESET_B-C-D-E.png");
+        this.load.image("village_outside", "assets/village/Outside_Stuff_TILESET_B-C-D-E.png");
+        this.load.image("village_terrains", "assets/village/Terrains_TILESET_B-C-D-E.png");
+        
+        this.load.spritesheet("village_campfire", "assets/village/campfire_32x32.png", { frameWidth: 32, frameHeight: 32 });
+        this.load.spritesheet("village_water", "assets/village/water_waves_32x32.png", { frameWidth: 32, frameHeight: 32 });
+        this.load.spritesheet("village_door", "assets/village/door_32x32.png", { frameWidth: 32, frameHeight: 48 });
+
 
         this.load.svg("mic-on", "assets/items/mic-on.svg");
         this.load.svg("mic-off", "assets/items/mic-off.svg");
@@ -41,6 +62,10 @@ export class Bootstrap extends Phaser.Scene {
 
     init() {
         this.network = new Network();
+    }
+
+    create() {
+        this.launchGame();
     }
 
     launchGame() {

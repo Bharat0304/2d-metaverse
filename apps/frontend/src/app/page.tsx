@@ -56,7 +56,7 @@ export default function LandingPage() {
                     </p>
                     <div className="hero-btns">
                         <button className="pbtn pb-r" onClick={() => go('/signup')}>▶ PLAY FREE</button>
-                        <button className="pbtn pb-y" onClick={() => go('/game')}>★ BUILD WORLD</button>
+                        <button className="pbtn pb-y" onClick={() => go('/dashboard')}>★ BUILD WORLD</button>
                         <button className="pbtn pb-g">◈ WATCH TRAILER</button>
                         <button className="pbtn pb-p" onClick={() => go('/login')}>↩ LOG IN</button>
                     </div>
@@ -155,7 +155,7 @@ export default function LandingPage() {
                         <div className="frow"><span className="fb" style={{ background: 'var(--pink)' }}>▸</span>Private rooms, portals, spawn zones, event stages</div>
                         <div className="frow"><span className="fb" style={{ background: 'var(--yellow)', color: 'var(--ink)' }}>▸</span>Emoji reactions, status bubbles, avatar emotes</div>
                         <div style={{ marginTop: '24px', display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-                            <button className="pbtn pb-p" style={{ fontSize: '7px', padding: '10px 16px' }} onClick={() => go('/game')}>▶ TRY MAP</button>
+                            <button className="pbtn pb-p" style={{ fontSize: '7px', padding: '10px 16px' }} onClick={() => go('/dashboard')}>▶ TRY MAP</button>
                             <button className="pbtn pb-w" style={{ fontSize: '7px', padding: '10px 16px' }}>◈ DOCS</button>
                         </div>
                     </div>
@@ -197,11 +197,11 @@ export default function LandingPage() {
                 <span className="stag" style={{ color: 'var(--pink)' }}>// SELECT STAGE</span>
                 <div className="stitle">CHOOSE YOUR <em style={{ color: 'var(--pink)' }}>ARENA</em></div>
                 <div className="world-grid">
-                    <div className="wc" onClick={() => go('/game')}><div className="wt wt1"><span className="wt-ico">⚔️</span></div><div className="wb"><div className="wc-tag">COMBAT ZONE</div><div className="wc-nm">BATTLE ARENA</div><div className="wc-bot"><div className="wc-pl">● 1,240 online</div><span className="pill" style={{ background: 'var(--red)', color: '#fff' }}>PVP</span></div></div></div>
-                    <div className="wc" onClick={() => go('/game')}><div className="wt wt2"><span className="wt-ico">💼</span></div><div className="wb"><div className="wc-tag">PRODUCTIVITY</div><div className="wc-nm">OFFICE SPACE</div><div className="wc-bot"><div className="wc-pl">● 892 online</div><span className="pill" style={{ background: 'var(--green)', color: 'var(--ink)' }}>WORK</span></div></div></div>
-                    <div className="wc" onClick={() => go('/game')}><div className="wt wt3"><span className="wt-ico">🎉</span></div><div className="wb"><div className="wc-tag">SOCIAL HUB</div><div className="wc-nm">HANGOUT ZONE</div><div className="wc-bot"><div className="wc-pl">● 3,107 online</div><span className="pill" style={{ background: 'var(--pink)', color: '#fff' }}>SOCIAL</span></div></div></div>
-                    <div className="wc" onClick={() => go('/game')}><div className="wt wt4"><span className="wt-ico">📚</span></div><div className="wb"><div className="wc-tag">EDUCATION</div><div className="wc-nm">CAMPUS</div><div className="wc-bot"><div className="wc-pl">● 440 online</div><span className="pill" style={{ background: 'var(--blue)', color: '#fff' }}>EDU</span></div></div></div>
-                    <div className="wc" onClick={() => go('/game')}><div className="wt wt5"><span className="wt-ico">🎵</span></div><div className="wb"><div className="wc-tag">LIVE EVENT</div><div className="wc-nm">CONCERT HALL</div><div className="wc-bot"><div className="wc-pl">● 5,600 online</div><span className="pill" style={{ background: 'var(--orange)', color: '#fff' }}>LIVE</span></div></div></div>
+                    <div className="wc" onClick={() => go('/dashboard')}><div className="wt wt1"><span className="wt-ico">⚔️</span></div><div className="wb"><div className="wc-tag">COMBAT ZONE</div><div className="wc-nm">BATTLE ARENA</div><div className="wc-bot"><div className="wc-pl">● 1,240 online</div><span className="pill" style={{ background: 'var(--red)', color: '#fff' }}>PVP</span></div></div></div>
+                    <div className="wc" onClick={() => go('/dashboard')}><div className="wt wt2"><span className="wt-ico">💼</span></div><div className="wb"><div className="wc-tag">PRODUCTIVITY</div><div className="wc-nm">OFFICE SPACE</div><div className="wc-bot"><div className="wc-pl">● 892 online</div><span className="pill" style={{ background: 'var(--green)', color: 'var(--ink)' }}>WORK</span></div></div></div>
+                    <div className="wc" onClick={() => go('/dashboard')}><div className="wt wt3"><span className="wt-ico">🎉</span></div><div className="wb"><div className="wc-tag">SOCIAL HUB</div><div className="wc-nm">HANGOUT ZONE</div><div className="wc-bot"><div className="wc-pl">● 3,107 online</div><span className="pill" style={{ background: 'var(--pink)', color: '#fff' }}>SOCIAL</span></div></div></div>
+                    <div className="wc" onClick={() => go('/dashboard')}><div className="wt wt4"><span className="wt-ico">📚</span></div><div className="wb"><div className="wc-tag">EDUCATION</div><div className="wc-nm">CAMPUS</div><div className="wc-bot"><div className="wc-pl">● 440 online</div><span className="pill" style={{ background: 'var(--blue)', color: '#fff' }}>EDU</span></div></div></div>
+                    <div className="wc" onClick={() => go('/dashboard')}><div className="wt wt5"><span className="wt-ico">🎵</span></div><div className="wb"><div className="wc-tag">LIVE EVENT</div><div className="wc-nm">CONCERT HALL</div><div className="wc-bot"><div className="wc-pl">● 5,600 online</div><span className="pill" style={{ background: 'var(--orange)', color: '#fff' }}>LIVE</span></div></div></div>
                     <div className="wc" onClick={() => go('/signup')}><div className="wt wt6"><span className="wt-ico" style={{ color: '#bbb', fontSize: '28px' }}>+</span></div><div className="wb"><div className="wc-tag">YOURS TO MAKE</div><div className="wc-nm">BUILD CUSTOM</div><div className="wc-bot"><div className="wc-pl">★ Start free →</div><span className="pill" style={{ background: 'var(--yellow)', color: 'var(--ink)' }}>FREE</span></div></div></div>
                 </div>
             </section>

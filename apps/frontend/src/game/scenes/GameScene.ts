@@ -205,49 +205,70 @@ export class GameScene extends Phaser.Scene {
             throw new Error("network instance missing");
         }
 
-        this.map = this.make.tilemap({ key: "map" });
+        const world = this.registry.get("world") || "default";
+        console.log("Loading world:", world);
 
-        console.log("Available map layers:", this.map.layers.map((l) => l.name));
+        if (world === "village") {
+            this.cameras.main.setBackgroundColor("#e9f5db");
+            this.map = this.make.tilemap({ key: "village_map" });
+            console.log("Village map layers:", this.map.layers.map(l => l.name));
+            const villageTileset = this.map.addTilesetImage("MY_TILESET", "village_tiles");
+            console.log("Village tileset added:", !!villageTileset);
+            const groundLayer = this.map.createLayer("Tile Layer 1", [villageTileset!])!;
+            if (groundLayer) {
+                console.log("Village ground layer created");
+                groundLayer.setCollisionByProperty({ collides: true });
+                groundLayer.setDepth(0);
+                this.mapLayer = groundLayer;
+            } else {
+                console.error("Failed to create village ground layer");
+            }
+        } else {
+            this.map = this.make.tilemap({ key: "map" });
 
-        const floorAndGroundTileset = this.map.addTilesetImage("FloorAndGround", "ground_tiles");
-        const basementTileset       = this.map.addTilesetImage("Basement", "basement");
-        const genericTileset        = this.map.addTilesetImage("Generic", "generic");
-        const modernOfficeTileset   = this.map.addTilesetImage("Modern_Office_Black_Shadow", "modern_office");
-        const chairTileset          = this.map.addTilesetImage("chair", "chair");
-        const whiteboardTileset     = this.map.addTilesetImage("whiteboard", "whiteboard");
+            console.log("Available map layers:", this.map.layers.map((l) => l.name));
 
-        const tilesets = [
-            floorAndGroundTileset,
-            basementTileset,
-            genericTileset,
-            modernOfficeTileset,
-            chairTileset,
-            whiteboardTileset,
-        ].filter(Boolean) as Phaser.Tilemaps.Tileset[];
+            const floorAndGroundTileset = this.map.addTilesetImage("FloorAndGround", "ground_tiles");
+            const basementTileset       = this.map.addTilesetImage("Basement", "basement");
+            const genericTileset        = this.map.addTilesetImage("Generic", "generic");
+            const modernOfficeTileset   = this.map.addTilesetImage("Modern_Office_Black_Shadow", "modern_office");
+            const chairTileset          = this.map.addTilesetImage("chair", "chair");
+            const whiteboardTileset     = this.map.addTilesetImage("whiteboard", "whiteboard");
 
-        const groundLayer = this.map.createLayer("Ground", tilesets)!;
-        groundLayer.setCollisionByProperty({ collides: true });
+            const tilesets = [
+                floorAndGroundTileset,
+                basementTileset,
+                genericTileset,
+                modernOfficeTileset,
+                chairTileset,
+                whiteboardTileset,
+            ].filter(Boolean) as Phaser.Tilemaps.Tileset[];
 
-        try {
-            const secondLayer = this.map.createLayer("Second_layer", tilesets)!;
-            const thirdLayer  = this.map.createLayer("third_layer", tilesets)!;
+            const groundLayer = this.map.createLayer("Ground", tilesets)!;
+            groundLayer.setCollisionByProperty({ collides: true });
 
-            secondLayer.setCollisionByProperty({ collides: true });
-            thirdLayer.setCollisionByProperty({ collides: true });
-            secondLayer.setCollisionByExclusion([-1]);
-            thirdLayer.setCollisionByExclusion([-1]);
+            try {
+                const secondLayer = this.map.createLayer("Second_layer", tilesets)!;
+                const thirdLayer  = this.map.createLayer("third_layer", tilesets)!;
 
-            this.secondLayer = secondLayer;
-            this.thirdLayer  = thirdLayer;
+                secondLayer.setCollisionByProperty({ collides: true });
+                thirdLayer.setCollisionByProperty({ collides: true });
+                secondLayer.setCollisionByExclusion([-1]);
+                thirdLayer.setCollisionByExclusion([-1]);
 
-            groundLayer.setDepth(0);
-            secondLayer.setDepth(1);
-            thirdLayer.setDepth(2);
-        } catch (e) {
-            console.warn("Could not load extra layers:", e);
+                this.secondLayer = secondLayer;
+                this.thirdLayer  = thirdLayer;
+
+                groundLayer.setDepth(0);
+                secondLayer.setDepth(1);
+                thirdLayer.setDepth(2);
+            } catch (e) {
+                console.warn("Could not load extra layers:", e);
+            }
+
+            this.mapLayer = groundLayer;
         }
 
-        this.mapLayer = groundLayer;
         this.cursorKeys = this.input.keyboard!.createCursorKeys();
 
         phaserEvents.on(Event.INITIALIZE_PLAYER, this.handleInitializingPlayer, this);

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+body { background: #333; margin: 0; padding: 20px; color: white; font-family: monospace; }
+.tileset-container {
+    position: relative;
+    background: url('/assets/village/Serene_Village_32x32.png') no-repeat top left;
+    width: 608px;
+    height: 1440px;
+    image-rendering: pixelated;
+}
+.grid {
+    position: absolute;
+    width: 32px;
+    height: 32px;
+    box-sizing: border-box;
+    border: 1px solid rgba(255,255,0,0.3);
+    color: yellow;
+    font-size: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-shadow: 1px 1px 0 #000;
+}
+</style>
+</head>
+<body>
+<div class="tileset-container" id="container"></div>
+<script>
+    const colCount = 19;
+    const rowCount = Math.ceil(1440 / 32);
+    const container = document.getElementById('container');
+    for (let i = 0; i < colCount * rowCount; i++) {
+        const x = (i % colCount) * 32;
+        const y = Math.floor(i / colCount) * 32;
+        const div = document.createElement('div');
+        div.className = 'grid';
+        div.style.left = x + 'px';
+        div.style.top = y + 'px';
+        div.textContent = i + 1; // 1-indexed for Tiled
+        container.appendChild(div);
+    }
+</script>
+</body>
+</html>

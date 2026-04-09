@@ -20,8 +20,11 @@ export default function Home() {
     useEffect(() => {
         // Only import and start Phaser once
         if (typeof window !== "undefined" && !((window as any).game)) {
+            const params = new URLSearchParams(window.location.search);
+            const world = params.get("world") || "default";
+
             import("../../game/main").then(({ startGame }) => {
-                startGame("game-container");
+                startGame("game-container", world);
             });
         }
     }, []);

@@ -3,13 +3,13 @@ import Phaser from "phaser";
 export class Player extends Phaser.GameObjects.Container {
     public sprite: Phaser.GameObjects.Sprite;
     public usernameText: Phaser.GameObjects.Text;
-    private micIcon: Phaser.GameObjects.Image;
-    private webcamIcon: Phaser.GameObjects.Image;
+    private micIcon!: Phaser.GameObjects.Image;
+    private webcamIcon!: Phaser.GameObjects.Image;
     private disconnectIcon: Phaser.GameObjects.Image | null = null;
     private statusBubble: Phaser.GameObjects.Graphics;
-    private isMicOn: boolean;
-    private isWebcamOn: boolean;
-    private isDisconnected: boolean;
+    private isMicOn!: boolean;
+    private isWebcamOn!: boolean;
+    private isDisconnected!: boolean;
 
     constructor(
         scene: Phaser.Scene,
@@ -22,7 +22,7 @@ export class Player extends Phaser.GameObjects.Container {
     ) {
         super(scene, x, y);
 
-        this.sprite = scene.add.sprite(0, 0, character, `${character}_down_idle`);
+        this.sprite = scene.add.sprite(0, 0, character);
         this.add(this.sprite);
         this.sprite.anims.play(`${character}_down_idle`);
 

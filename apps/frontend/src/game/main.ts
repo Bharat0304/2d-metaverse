@@ -2,7 +2,7 @@ import { GameScene } from "./scenes/GameScene";
 import { Bootstrap } from "./scenes/Bootstrap";
 
 // Only runs in browser
-export function startGame(containerId: string): Phaser.Game {
+export function startGame(containerId: string, world: string = "default"): Phaser.Game {
     const config: Phaser.Types.Core.GameConfig = {
         type: Phaser.AUTO,
         width: window.innerWidth,
@@ -19,6 +19,7 @@ export function startGame(containerId: string): Phaser.Game {
     };
 
     const game = new Phaser.Game(config);
+    game.registry.set("world", world);
     (window as any).game = game;
     return game;
 }

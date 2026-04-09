@@ -191,17 +191,17 @@ export default class Network {
         isWebcamOn?: boolean;
     }) {
         const proxy = {
-            anim: data.anim ?? `${data.character}_down_idle`,
+            anim: data.anim || `${data.character || 'nancy'}_down_idle`,
             x: data.x,
             y: data.y,
-            username: data.username,
+            username: data.username || "Explorer",
             isMicOn: data.isMicOn ?? false,
             isWebcamOn: data.isWebcamOn ?? false,
             isDisconnected: false,
             // internal storage used by PLAYER_MOVED handler
             _serverX: data.x,
             _serverY: data.y,
-            _anim: data.anim ?? `${data.character}_down_idle`,
+            _anim: data.anim || `${data.character || 'nancy'}_down_idle`,
             _onChangeCallbacks: [] as Array<() => void>,
             onChange(cb: () => void) {
                 this._onChangeCallbacks.push(cb);

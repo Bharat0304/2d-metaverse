@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Nunito:wght@700;800;900&family=Share+Tech+Mono&display=swap" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html{color-scheme:light only}
+:root{
+  --red:#ff4d6d;--yellow:#ffd166;--green:#06d6a0;--blue:#118ab2;
+  --purple:#9b5de5;--pink:#f15bb5;--orange:#ff6d00;
+  --ink:#1a0a2e;--ink2:#3d1f6e;--dim:#7a5fa0;
+  --bg:#fef6ff;--card:#fff;
+  --px:'Press Start 2P',monospace;
+  --mn:'Share Tech Mono',monospace;
+  --bd:'Nunito',sans-serif;
+}
+body{background:var(--bg);color:var(--ink);font-family:var(--bd);overflow-x:hidden}
+.page{display:none}.page.active{display:block}
+
+/* CHECKER */
+.checker{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:linear-gradient(45deg,rgba(155,93,229,.04) 25%,transparent 25%),
+  linear-gradient(-45deg,rgba(155,93,229,.04) 25%,transparent 25%),
+  linear-gradient(45deg,transparent 75%,rgba(155,93,229,.04) 75%),
+  linear-gradient(-45deg,transparent 75%,rgba(155,93,229,.04) 75%);
+  background-size:18px 18px;background-position:0 0,0 9px,9px -9px,-9px 0}
+
+/* ─── SIDEBAR NAV ─── */
+.app{display:flex;min-height:100vh}
+.sidebar{width:220px;flex-shrink:0;background:#fff;border-right:3px solid var(--ink);
+  display:flex;flex-direction:column;position:sticky;top:0;height:100vh;z-index:40}
+.sb-logo{padding:18px 20px;border-bottom:3px solid var(--ink);display:flex;align-items:center;gap:10px}
+.sb-logo-txt{font-family:var(--px);font-size:12px;letter-spacing:2px}
+.sb-logo-txt span:nth-child(1){color:var(--red)}.sb-logo-txt span:nth-child(2){color:var(--yellow)}
+.sb-logo-txt span:nth-child(3){color:var(--green)}.sb-logo-txt span:nth-child(4){color:var(--blue)}
+.sb-logo-txt span:nth-child(5){color:var(--purple)}.sb-logo-txt span:nth-child(6){color:var(--pink)}
+.sb-player{padding:14px 20px;border-bottom:2px solid #f0e0ff;display:flex;align-items:center;gap:10px}
+.sp-ava{width:36px;height:36px;border:2px solid var(--ink);background:var(--purple);
+  display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.sp-name{font-family:var(--px);font-size:7px;color:var(--ink);line-height:1.8}
+.sp-rank{font-family:var(--px);font-size:6px;color:var(--purple)}
+.sb-nav{flex:1;padding:12px 0;overflow-y:auto}
+.sb-section{font-family:var(--px);font-size:5px;color:var(--dim);letter-spacing:2px;
+  padding:10px 20px 6px}
+.sb-link{display:flex;align-items:center;gap:10px;padding:10px 20px;cursor:pointer;
+  transition:all .15s;border-left:3px solid transparent;text-decoration:none}
+.sb-link:hover{background:#f5eeff;border-left-color:var(--purple)}
+.sb-link.active{background:#f0e8ff;border-left-color:var(--purple)}
+.sb-ico{font-size:14px;width:20px;text-align:center}
+.sb-txt{font-family:var(--px);font-size:7px;color:var(--ink);letter-spacing:1px}
+.sb-link.active .sb-txt{color:var(--purple)}
+.sb-badge{font-family:var(--px);font-size:5px;padding:2px 6px;border:1px solid var(--ink);margin-left:auto}
+.sb-footer{padding:14px 20px;border-top:2px solid #f0e0ff}
+.sb-lp-btn{width:100%;font-family:var(--px);font-size:7px;background:#fff;color:var(--red);
+  border:2px solid var(--red);padding:8px;cursor:pointer;box-shadow:2px 2px 0 var(--red);
+  transition:all .1s;text-align:center}
+.sb-lp-btn:hover{background:var(--red);color:#fff}
+
+/* ─── MAIN CONTENT ─── */
+.main{flex:1;min-width:0;position:relative;z-index:1}
+
+/* TOP BAR */
+.topbar{background:#fff;border-bottom:3px solid var(--ink);padding:0 28px;height:56px;
+  display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:30}
+.tb-title{font-family:var(--px);font-size:11px;color:var(--ink)}
+.tb-title span{color:var(--purple)}
+.tb-right{display:flex;align-items:center;gap:10px}
+.tb-search{border:2px solid var(--ink);padding:6px 12px;font-family:var(--mn);font-size:12px;
+  color:var(--ink);outline:none;background:#fef6ff;width:200px;font-weight:700}
+.tb-search::placeholder{color:#ccc;font-weight:400}
+.tb-btn{font-family:var(--px);font-size:6px;border:2px solid var(--ink);padding:6px 12px;
+  cursor:pointer;transition:all .1s;box-shadow:2px 2px 0 var(--ink)}
+.tb-btn:hover{transform:translate(-1px,-1px);box-shadow:3px 3px 0 var(--ink)}
+.tb-btn:active{transform:translate(1px,1px);box-shadow:1px 1px 0 var(--ink)}
+.notif{position:relative;cursor:pointer}
+.notif-dot{position:absolute;top:-2px;right:-2px;width:8px;height:8px;background:var(--red);
+  border:1px solid #fff;border-radius:50%;animation:pulse 1.5s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+
+/* ─── DASHBOARD ─── */
+.dash-body{padding:28px}
+
+/* WELCOME BANNER */
+.welcome-banner{background:linear-gradient(135deg,var(--purple),var(--pink));
+  border:3px solid var(--ink);box-shadow:6px 6px 0 var(--ink);
+  padding:24px 28px;margin-bottom:24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;position:relative;overflow:hidden}
+.wb-dots{position:absolute;inset:0;background-image:radial-gradient(rgba(255,255,255,.12) 1px,transparent 1px);background-size:16px 16px}
+.wb-c{position:relative;z-index:1}
+.wb-tag{font-family:var(--px);font-size:7px;color:rgba(255,255,255,.7);letter-spacing:2px;margin-bottom:8px}
+.wb-title{font-family:var(--px);font-size:clamp(11px,2.5vw,18px);color:#fff;line-height:1.8;margin-bottom:4px}
+.wb-sub{font-family:var(--bd);font-size:14px;color:rgba(255,255,255,.8);font-weight:800}
+.wb-btns{display:flex;gap:8px;flex-wrap:wrap;position:relative;z-index:1}
+.wb-btn{font-family:var(--px);font-size:7px;border:2px solid #fff;padding:9px 16px;cursor:pointer;transition:all .1s}
+.wb-btn-y{background:var(--yellow);color:var(--ink);box-shadow:3px 3px 0 rgba(0,0,0,.2)}
+.wb-btn-y:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 rgba(0,0,0,.2)}
+.wb-btn-w{background:rgba(255,255,255,.15);color:#fff}
+.wb-btn-w:hover{background:rgba(255,255,255,.25)}
+
+/* STAT CARDS */
+.stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px}
+.stat-card{background:#fff;border:2px solid var(--ink);padding:18px 16px;box-shadow:4px 4px 0 var(--ink);position:relative;overflow:hidden}
+.sc-stripe{position:absolute;top:0;left:0;right:0;height:5px}
+.sc-ico{font-size:22px;margin-bottom:8px;display:block}
+.sc-val{font-family:var(--px);font-size:clamp(12px,2.5vw,20px);color:var(--ink);display:block;margin-bottom:4px}
+.sc-lbl{font-family:var(--px);font-size:6px;color:var(--dim);letter-spacing:1px}
+.sc-chg{font-family:var(--mn);font-size:11px;font-weight:700;margin-top:6px}
+.chg-up{color:var(--green)}.chg-dn{color:var(--red)}
+
+/* SECTION HEADER */
+.sec-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.sec-hdr-l{display:flex;align-items:center;gap:10px}
+.sec-hdr-tag{font-family:var(--px);font-size:8px;color:var(--ink)}
+.sec-hdr-sub{font-family:var(--mn);font-size:12px;color:var(--dim);font-weight:700}
+.sec-hdr-btn{font-family:var(--px);font-size:6px;border:2px solid var(--ink);padding:6px 12px;
+  cursor:pointer;background:#fff;box-shadow:2px 2px 0 var(--ink);transition:all .1s}
+.sec-hdr-btn:hover{background:var(--yellow);transform:translate(-1px,-1px);box-shadow:3px 3px 0 var(--ink)}
+
+/* MAP CARDS GRID */
+.maps-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:28px}
+.map-card{border:2px solid var(--ink);background:#fff;box-shadow:4px 4px 0 var(--ink);
+  cursor:pointer;transition:all .2s;overflow:hidden}
+.map-card:hover{transform:translate(-3px,-3px);box-shadow:7px 7px 0 var(--ink)}
+.map-card:active{transform:translate(2px,2px);box-shadow:2px 2px 0 var(--ink)}
+.mc-thumb{height:120px;position:relative;border-bottom:2px solid var(--ink);overflow:hidden}
+.mc-grid-bg{position:absolute;inset:0;
+  background-image:linear-gradient(rgba(0,0,0,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(0,0,0,.06) 1px,transparent 1px);
+  background-size:16px 16px}
+.mc-mini-rooms{position:absolute;inset:10px;display:grid;gap:3px}
+.mc-room{border:1px solid;font-family:var(--px);font-size:4px;display:flex;align-items:center;justify-content:center;text-align:center}
+.mc-badge{position:absolute;top:8px;left:8px;font-family:var(--px);font-size:5px;
+  padding:3px 8px;border:1px solid var(--ink)}
+.mc-live{position:absolute;top:8px;right:8px;display:flex;align-items:center;gap:4px;
+  background:rgba(0,0,0,.7);padding:3px 7px;border:1px solid var(--red)}
+.mc-live-dot{width:6px;height:6px;border-radius:50%;background:var(--red);animation:pulse 1.2s infinite}
+.mc-live-txt{font-family:var(--px);font-size:5px;color:#fff}
+.mc-own-badge{position:absolute;top:8px;right:8px;background:var(--yellow);border:1px solid var(--ink);
+  font-family:var(--px);font-size:5px;color:var(--ink);padding:3px 7px}
+.mc-body{padding:14px}
+.mc-name{font-family:var(--px);font-size:9px;color:var(--ink);margin-bottom:6px;line-height:1.7}
+.mc-meta{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.mc-players{font-family:var(--mn);font-size:11px;color:var(--dim);font-weight:700;display:flex;align-items:center;gap:4px}
+.mc-dot-live{width:6px;height:6px;border-radius:50%;background:var(--green);border:1px solid var(--ink)}
+.mc-tag{font-family:var(--px);font-size:5px;padding:2px 7px;border:1px solid var(--ink)}
+.mc-desc{font-family:var(--bd);font-size:12px;color:var(--dim);font-weight:700;line-height:1.5;margin-bottom:10px}
+.mc-footer{display:flex;align-items:center;justify-content:space-between;border-top:1px solid #f0e0ff;padding-top:8px}
+.mc-host{font-family:var(--mn);font-size:10px;color:var(--dim);font-weight:700}
+.mc-enter-btn{font-family:var(--px);font-size:6px;border:2px solid var(--ink);padding:5px 10px;
+  cursor:pointer;background:#fff;box-shadow:2px 2px 0 var(--ink);transition:all .1s}
+.mc-enter-btn:hover{background:var(--ink);color:#fff}
+
+/* CREATE WORLD CARD */
+.mc-create{border:2px dashed var(--ink);background:#fef6ff;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;min-height:260px;cursor:pointer;transition:all .2s;
+  box-shadow:none}
+.mc-create:hover{background:#f5eeff;border-color:var(--purple);box-shadow:4px 4px 0 var(--purple)}
+.mc-create-ico{font-family:var(--px);font-size:36px;color:#e0d0f0;margin-bottom:12px}
+.mc-create-txt{font-family:var(--px);font-size:8px;color:var(--dim);line-height:1.9;text-align:center}
+
+/* BOTTOM GRID */
+.dash-bottom{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+
+/* RECENT ACTIVITY */
+.act-box{background:#fff;border:2px solid var(--ink);box-shadow:4px 4px 0 var(--ink)}
+.act-hdr{padding:10px 16px;border-bottom:2px solid var(--ink);display:flex;align-items:center;justify-content:space-between}
+.act-hdr-t{font-family:var(--px);font-size:8px;color:var(--ink)}
+.act-row{display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid #f5eeff}
+.act-row:last-child{border-bottom:none}
+.act-ico{font-size:16px;width:28px;height:28px;border:2px solid var(--ink);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.act-info{flex:1}
+.act-title{font-family:var(--mn);font-size:12px;color:var(--ink);font-weight:700}
+.act-time{font-family:var(--px);font-size:5px;color:var(--dim);margin-top:2px}
+.act-badge{font-family:var(--px);font-size:5px;padding:2px 7px;border:1px solid var(--ink)}
+
+/* QUICK STATS */
+.qs-box{background:#fff;border:2px solid var(--ink);box-shadow:4px 4px 0 var(--ink)}
+.qs-hdr{padding:10px 16px;border-bottom:2px solid var(--ink)}
+.qs-hdr-t{font-family:var(--px);font-size:8px;color:var(--ink)}
+.qs-body{padding:14px 16px}
+.qs-row{margin-bottom:14px}
+.qs-lbl{font-family:var(--px);font-size:6px;color:var(--dim);margin-bottom:5px;display:flex;justify-content:space-between}
+.qs-bar{height:10px;background:#f0e8ff;border:1px solid var(--ink);position:relative;overflow:hidden}
+.qs-fill{height:100%;transition:width .5s}
+.qs-friends{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:12px}
+.qf{border:2px solid var(--ink);padding:8px 4px;text-align:center;cursor:pointer;transition:all .15s}
+.qf:hover{background:#f5eeff;border-color:var(--purple)}
+.qf-ava{font-size:16px;margin-bottom:4px;display:block}
+.qf-nm{font-family:var(--px);font-size:5px;color:var(--ink)}
+.qf-dot{width:6px;height:6px;border-radius:50%;margin:4px auto 0;border:1px solid var(--ink)}
+
+/* ─── MAP PAGE ─── */
+.map-page{display:flex;height:calc(100vh - 56px);background:#fff}
+
+/* MAP HUD TOPBAR */
+.map-topbar{position:absolute;top:0;left:0;right:0;height:48px;background:#fff;border-bottom:3px solid var(--ink);
+  display:flex;align-items:center;gap:0;z-index:20}
+.mt-back{font-family:var(--px);font-size:7px;border-right:3px solid var(--ink);padding:0 16px;height:100%;
+  display:flex;align-items:center;cursor:pointer;background:#fff;transition:background .15s;gap:6px}
+.mt-back:hover{background:var(--yellow)}
+.mt-world-name{font-family:var(--px);font-size:9px;color:var(--ink);padding:0 16px;border-right:2px solid #f0e0ff}
+.mt-zone{font-family:var(--mn);font-size:12px;color:var(--purple);padding:0 12px;border-right:2px solid #f0e0ff;font-weight:700}
+.mt-spacer{flex:1}
+.mt-stat{display:flex;align-items:center;gap:6px;padding:0 12px;border-left:2px solid #f0e0ff;font-family:var(--px);font-size:6px;color:var(--dim)}
+.mt-stat b{color:var(--ink);font-family:var(--px)}
+.mt-ping{color:var(--green)}
+.mt-btn{font-family:var(--px);font-size:6px;border:none;border-left:2px solid var(--ink);padding:0 14px;height:100%;cursor:pointer;transition:background .15s}
+.mt-btn:hover{opacity:.85}
+
+/* MAP CANVAS AREA */
+.map-canvas-wrap{flex:1;position:relative;overflow:hidden;background:#f5eeff;
+  background-image:linear-gradient(rgba(155,93,229,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(155,93,229,.06) 1px,transparent 1px);
+  background-size:32px 32px;padding-top:48px}
+.map-canvas{position:absolute;inset:48px 0 0 0;overflow:hidden}
+
+/* ROOMS ON MAP */
+.world-room{position:absolute;border:2px solid var(--ink);background:#fff;cursor:pointer;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  font-family:var(--px);text-align:center;transition:all .2s;box-shadow:3px 3px 0 var(--ink)}
+.world-room:hover{transform:translate(-2px,-2px);box-shadow:5px 5px 0 var(--ink);z-index:5}
+.world-room.active-room{z-index:5}
+.wr-name{font-size:7px;color:var(--ink);margin-bottom:2px;line-height:1.6}
+.wr-cnt{font-family:var(--mn);font-size:9px;color:var(--dim);font-weight:700}
+.wr-ico{font-size:18px;margin-bottom:4px}
+
+/* ROOM CONNECTORS (SVG) */
+.room-svg{position:absolute;inset:0;pointer-events:none}
+
+/* PLAYER AVATARS ON MAP */
+.player-ava{position:absolute;z-index:10;display:flex;flex-direction:column;align-items:center;gap:2px;transition:all .5s linear}
+.pa-bubble{background:#fff;border:2px solid var(--ink);font-family:var(--px);font-size:5px;
+  padding:2px 5px;white-space:nowrap;position:relative;margin-bottom:2px;box-shadow:1px 1px 0 var(--ink)}
+.pa-bubble::after{content:'';position:absolute;bottom:-5px;left:50%;transform:translateX(-50%);
+  width:0;height:0;border-left:4px solid transparent;border-right:4px solid transparent;border-top:4px solid var(--ink)}
+.pa-sprite{width:28px;height:28px;border:2px solid var(--ink);display:flex;align-items:center;justify-content:center;font-size:16px}
+
+/* RIGHT PANEL */
+.map-right{width:260px;flex-shrink:0;border-left:3px solid var(--ink);background:#fff;display:flex;flex-direction:column;padding-top:48px}
+.mr-section{border-bottom:2px solid #f0e0ff;padding:14px}
+.mr-hdr{font-family:var(--px);font-size:7px;color:var(--ink);margin-bottom:10px;display:flex;align-items:center;justify-content:space-between}
+.mr-hdr-tag{font-family:var(--px);font-size:6px;color:var(--dim)}
+
+/* PLAYERS LIST */
+.pl-row{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.pl-ava{width:26px;height:26px;border:2px solid var(--ink);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.pl-info{flex:1}
+.pl-name{font-family:var(--mn);font-size:11px;color:var(--ink);font-weight:700}
+.pl-zone{font-family:var(--px);font-size:5px;color:var(--dim)}
+.pl-status{width:7px;height:7px;border-radius:50%;border:1px solid var(--ink)}
+
+/* CHAT */
+.chat-area{flex:1;display:flex;flex-direction:column;min-height:0}
+.chat-msgs{flex:1;padding:10px 14px;overflow-y:auto;display:flex;flex-direction:column;gap:8px;min-height:0;max-height:200px}
+.chat-msg{display:flex;gap:6px;align-items:flex-start}
+.cm-ava{width:20px;height:20px;border:1px solid var(--ink);display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;margin-top:1px}
+.cm-body{flex:1}
+.cm-name{font-family:var(--px);font-size:5px;margin-bottom:2px}
+.cm-txt{font-family:var(--bd);font-size:12px;color:var(--ink2);font-weight:700;line-height:1.4;
+  background:#f5eeff;border:1px solid #d4b8f0;padding:4px 8px}
+.cm-txt.mine{background:#e8fff8;border-color:#a0d8b0}
+.chat-input-row{padding:10px 14px;border-top:2px solid #f0e0ff;display:flex;gap:6px}
+.chat-inp{flex:1;border:2px solid var(--ink);padding:7px 10px;font-family:var(--mn);font-size:11px;color:var(--ink);outline:none;background:#fef6ff;font-weight:700}
+.chat-inp::placeholder{color:#ccc;font-weight:400}
+.chat-send{font-family:var(--px);font-size:6px;background:var(--purple);color:#fff;border:2px solid var(--ink);padding:7px 10px;cursor:pointer;box-shadow:2px 2px 0 var(--ink);transition:all .1s}
+.chat-send:hover{background:var(--pink)}
+
+/* ROOM INFO POPUP */
+.room-popup{position:absolute;z-index:30;background:#fff;border:2px solid var(--ink);box-shadow:5px 5px 0 var(--ink);padding:16px;min-width:200px;display:none}
+.rp-hdr{font-family:var(--px);font-size:9px;color:var(--ink);margin-bottom:4px}
+.rp-sub{font-family:var(--bd);font-size:12px;color:var(--dim);margin-bottom:12px;font-weight:700}
+.rp-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;font-family:var(--px);font-size:6px;color:var(--dim)}
+.rp-row b{color:var(--ink)}
+.rp-btn{width:100%;font-family:var(--px);font-size:7px;border:2px solid var(--ink);padding:8px;cursor:pointer;margin-top:10px;transition:all .1s;box-shadow:2px 2px 0 var(--ink)}
+.rp-btn:hover{transform:translate(-1px,-1px);box-shadow:3px 3px 0 var(--ink)}
+.rp-close{position:absolute;top:6px;right:8px;font-family:var(--px);font-size:8px;cursor:pointer;color:var(--dim)}
+.rp-close:hover{color:var(--red)}
+
+/* MINIMAP */
+.minimap{position:absolute;bottom:16px;left:16px;z-index:20;background:#fff;border:2px solid var(--ink);box-shadow:3px 3px 0 var(--ink);padding:6px}
+.mm-title{font-family:var(--px);font-size:5px;color:var(--dim);margin-bottom:4px}
+.mm-grid{width:80px;height:60px;background:#f5eeff;position:relative;
+  background-image:linear-gradient(rgba(155,93,229,.1) 1px,transparent 1px),linear-gradient(90deg,rgba(155,93,229,.1) 1px,transparent 1px);
+  background-size:8px 8px}
+.mm-room{position:absolute;background:rgba(155,93,229,.2);border:1px solid var(--purple)}
+.mm-you{position:absolute;width:5px;height:5px;background:var(--red);border:1px solid var(--ink);animation:mmMove 8s linear infinite}
+@keyframes mmMove{0%{top:30%;left:30%}25%{top:50%;left:60%}50%{top:20%;left:70%}75%{top:60%;left:20%}100%{top:30%;left:30%}}
+
+/* ZOOM CONTROLS */
+.zoom-ctrl{position:absolute;bottom:16px;right:16px;z-index:20;display:flex;flex-direction:column;gap:4px}
+.zc-btn{width:32px;height:32px;background:#fff;border:2px solid var(--ink);font-family:var(--px);font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:2px 2px 0 var(--ink);transition:all .1s}
+.zc-btn:hover{background:var(--yellow);transform:translate(-1px,-1px);box-shadow:3px 3px 0 var(--ink)}
+
+/* TOOLBAR */
+.map-toolbar{position:absolute;left:16px;top:64px;z-index:20;display:flex;flex-direction:column;gap:4px}
+.tool-btn{width:38px;height:38px;background:#fff;border:2px solid var(--ink);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;font-size:16px;
+  box-shadow:2px 2px 0 var(--ink);transition:all .1s}
+.tool-btn:hover{transform:translate(-1px,-1px);box-shadow:3px 3px 0 var(--ink)}
+.tool-btn.sel{background:var(--purple);border-color:var(--purple)}
+
+/* VOICE INDICATOR */
+.voice-bar{position:absolute;bottom:16px;left:50%;transform:translateX(-50%);z-index:20;
+  background:#fff;border:2px solid var(--ink);box-shadow:4px 4px 0 var(--ink);
+  padding:8px 20px;display:flex;align-items:center;gap:12px}
+.vb-icon{font-size:16px}
+.vb-waves{display:flex;gap:3px;align-items:center}
+.vb-w{width:3px;background:var(--green);border-radius:1px;animation:wave linear infinite}
+.vb-w:nth-child(1){height:6px;animation-duration:0.8s}
+.vb-w:nth-child(2){height:12px;animation-duration:0.6s}
+.vb-w:nth-child(3){height:18px;animation-duration:0.5s}
+.vb-w:nth-child(4){height:12px;animation-duration:0.7s}
+.vb-w:nth-child(5){height:6px;animation-duration:0.9s}
+@keyframes wave{0%,100%{transform:scaleY(1)}50%{transform:scaleY(0.3)}}
+.vb-txt{font-family:var(--px);font-size:7px;color:var(--ink)}
+.vb-mute{font-family:var(--px);font-size:6px;border:1px solid var(--ink);padding:4px 8px;cursor:pointer;background:#fff;transition:background .15s}
+.vb-mute:hover{background:var(--red);color:#fff}
+
+@media(max-width:900px){
+  .sidebar{display:none}
+  .stat-row{grid-template-columns:1fr 1fr}
+  .maps-grid{grid-template-columns:1fr 1fr}
+  .dash-bottom{grid-template-columns:1fr}
+  .map-right{display:none}
+}
+@media(max-width:580px){
+  .maps-grid{grid-template-columns:1fr}
+  .stat-row{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+<div class="checker"></div>
+
+<!-- ══════════ DASHBOARD ══════════ -->
+<div id="page-dash" class="page active">
+<div class="app">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sb-logo">
+      <div class="sb-logo-txt"><span>V</span><span>O</span><span>R</span><span>T</span><span>E</span><span>X</span></div>
+    </div>
+    <div class="sb-player">
+      <div class="sp-ava">🤖</div>
+      <div>
+        <div class="sp-name">XEON_J</div>
+        <div class="sp-rank">★ RANK #01 · LV.42</div>
+      </div>
+    </div>
+    <nav class="sb-nav">
+      <div class="sb-section">MAIN</div>
+      <div class="sb-link active">
+        <span class="sb-ico">🗺️</span>
+        <span class="sb-txt">MY WORLDS</span>
+      </div>
+      <div class="sb-link">
+        <span class="sb-ico">🔍</span>
+        <span class="sb-txt">EXPLORE</span>
+      </div>
+      <div class="sb-link">
+        <span class="sb-ico">⭐</span>
+        <span class="sb-txt">FAVOURITES</span>
+        <span class="sb-badge" style="background:var(--yellow);color:var(--ink)">3</span>
+      </div>
+      <div class="sb-link">
+        <span class="sb-ico">📅</span>
+        <span class="sb-txt">EVENTS</span>
+        <span class="sb-badge" style="background:var(--red);color:#fff">2</span>
+      </div>
+      <div class="sb-section">PLAYER</div>
+      <div class="sb-link">
+        <span class="sb-ico">🏆</span>
+        <span class="sb-txt">LEADERBOARD</span>
+      </div>
+      <div class="sb-link">
+        <span class="sb-ico">👥</span>
+        <span class="sb-txt">FRIENDS</span>
+        <span class="sb-badge" style="background:var(--green);color:var(--ink)">5</span>
+      </div>
+      <div class="sb-link">
+        <span class="sb-ico">🎨</span>
+        <span class="sb-txt">AVATAR</span>
+      </div>
+      <div class="sb-link">
+        <span class="sb-ico">🛒</span>
+        <span class="sb-txt">SHOP</span>
+      </div>
+      <div class="sb-section">ACCOUNT</div>
+      <div class="sb-link">
+        <span class="sb-ico">⚙️</span>
+        <span class="sb-txt">SETTINGS</span>
+      </div>
+      <div class="sb-link">
+        <span class="sb-ico">🔔</span>
+        <span class="sb-txt">NOTIFICATIONS</span>
+        <span class="sb-badge" style="background:var(--red);color:#fff">7</span>
+      </div>
+    </nav>
+    <div class="sb-footer">
+      <button class="sb-lp-btn">↩ LOG OUT</button>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main">
+    <div class="topbar">
+      <div class="tb-title">DASHBOARD <span>// MY WORLDS</span></div>
+      <div class="tb-right">
+        <input class="tb-search" type="text" placeholder="Search worlds..."/>
+        <button class="tb-btn" style="background:var(--green);color:var(--ink)">+ NEW WORLD</button>
+        <div class="notif tb-btn" style="background:#fff;font-size:16px;padding:6px 10px">🔔<div class="notif-dot"></div></div>
+        <div style="width:32px;height:32px;border:2px solid var(--ink);background:var(--purple);display:flex;align-items:center;justify-content:center;font-size:16px;cursor:pointer">🤖</div>
+      </div>
+    </div>
+
+    <div class="dash-body">
+
+      <!-- WELCOME BANNER -->
+      <div class="welcome-banner">
+        <div class="wb-dots"></div>
+        <div class="wb-c">
+          <div class="wb-tag">▶ PLAYER STATUS: ACTIVE</div>
+          <div class="wb-title">WELCOME BACK, XEON_J! 👾</div>
+          <div class="wb-sub">You have 2 live events and 5 friends online right now.</div>
+        </div>
+        <div class="wb-btns">
+          <button class="wb-btn wb-btn-y">▶ QUICK SPAWN</button>
+          <button class="wb-btn wb-btn-w">⚡ VIEW EVENTS</button>
+        </div>
+      </div>
+
+      <!-- STAT CARDS -->
+      <div class="stat-row">
+        <div class="stat-card">
+          <div class="sc-stripe" style="background:var(--purple)"></div>
+          <span class="sc-ico">🗺️</span>
+          <span class="sc-val">6</span>
+          <span class="sc-lbl">MY WORLDS</span>
+          <div class="sc-chg chg-up">▲ +1 this week</div>
+        </div>
+        <div class="stat-card">
+          <div class="sc-stripe" style="background:var(--green)"></div>
+          <span class="sc-ico">👥</span>
+          <span class="sc-val">5</span>
+          <span class="sc-lbl">FRIENDS ONLINE</span>
+          <div class="sc-chg chg-up">▲ PIXELWOLF just joined</div>
+        </div>
+        <div class="stat-card">
+          <div class="sc-stripe" style="background:var(--yellow)"></div>
+          <span class="sc-ico">⏱️</span>
+          <span class="sc-val">142h</span>
+          <span class="sc-lbl">TOTAL PLAY TIME</span>
+          <div class="sc-chg chg-up">▲ +3h today</div>
+        </div>
+        <div class="stat-card">
+          <div class="sc-stripe" style="background:var(--red)"></div>
+          <span class="sc-ico">🏆</span>
+          <span class="sc-val">#01</span>
+          <span class="sc-lbl">GLOBAL RANK</span>
+          <div class="sc-chg" style="color:var(--yellow)">★ RANK LEADER</div>
+        </div>
+      </div>
+
+      <!-- MY WORLDS -->
+      <div class="sec-hdr">
+        <div class="sec-hdr-l">
+          <span class="sec-hdr-tag">★ MY WORLDS</span>
+          <span class="sec-hdr-sub">6 worlds · 2 live</span>
+        </div>
+        <button class="sec-hdr-btn">VIEW ALL →</button>
+      </div>
+
+      <div class="maps-grid">
+
+        <!-- WORLD 1 -->
+        <div class="map-card" onclick="enterMap('BATTLE ARENA','var(--red)','⚔️',28)">
+          <div class="mc-thumb" style="background:linear-gradient(135deg,#ffd166,#ff4d6d)">
+            <div class="mc-grid-bg"></div>
+            <div class="mc-badge" style="background:var(--red);color:#fff">PVP</div>
+            <div class="mc-live"><div class="mc-live-dot"></div><span class="mc-live-txt">LIVE</span></div>
+          </div>
+          <div class="mc-body">
+            <div class="mc-name">BATTLE ARENA</div>
+            <div class="mc-meta">
+              <div class="mc-players"><div class="mc-dot-live"></div>28 / 50 online</div>
+              <span class="mc-tag" style="background:var(--red);color:#fff">COMBAT</span>
+            </div>
+            <div class="mc-desc">My PVP world with custom spawn zones, weapon tiles and ranked matches.</div>
+            <div class="mc-footer">
+              <span class="mc-host">HOST: YOU</span>
+              <button class="mc-enter-btn" style="background:var(--red);color:#fff">ENTER ▶</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- WORLD 2 -->
+        <div class="map-card" onclick="enterMap('CHILL OFFICE','var(--green)','💼',12)">
+          <div class="mc-thumb" style="background:linear-gradient(135deg,#06d6a0,#118ab2)">
+            <div class="mc-grid-bg"></div>
+            <div class="mc-badge" style="background:var(--green);color:var(--ink)">WORK</div>
+            <div class="mc-live"><div class="mc-live-dot"></div><span class="mc-live-txt">LIVE</span></div>
+          </div>
+          <div class="mc-body">
+            <div class="mc-name">CHILL OFFICE</div>
+            <div class="mc-meta">
+              <div class="mc-players"><div class="mc-dot-live"></div>12 / 30 online</div>
+              <span class="mc-tag" style="background:var(--green);color:var(--ink)">WORK</span>
+            </div>
+            <div class="mc-desc">Team workspace with screen share zones, whiteboard rooms and focus areas.</div>
+            <div class="mc-footer">
+              <span class="mc-host">HOST: YOU</span>
+              <button class="mc-enter-btn" style="background:var(--green);color:var(--ink)">ENTER ▶</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- WORLD 3 -->
+        <div class="map-card" onclick="enterMap('PIXEL LOUNGE','var(--pink)','🎉',44)">
+          <div class="mc-thumb" style="background:linear-gradient(135deg,#f15bb5,#9b5de5)">
+            <div class="mc-grid-bg"></div>
+            <div class="mc-badge" style="background:var(--pink);color:#fff">SOCIAL</div>
+            <div class="mc-own-badge">★ POPULAR</div>
+          </div>
+          <div class="mc-body">
+            <div class="mc-name">PIXEL LOUNGE</div>
+            <div class="mc-meta">
+              <div class="mc-players"><div class="mc-dot-live" style="background:var(--dim)"></div>44 / 100 online</div>
+              <span class="mc-tag" style="background:var(--pink);color:#fff">SOCIAL</span>
+            </div>
+            <div class="mc-desc">My public hangout world — music zones, chill corners and event stage.</div>
+            <div class="mc-footer">
+              <span class="mc-host">HOST: YOU</span>
+              <button class="mc-enter-btn" style="background:var(--pink);color:#fff">ENTER ▶</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- WORLD 4 -->
+        <div class="map-card" onclick="enterMap('EDU CAMPUS','var(--blue)','📚',8)">
+          <div class="mc-thumb" style="background:linear-gradient(135deg,#118ab2,#9b5de5)">
+            <div class="mc-grid-bg"></div>
+            <div class="mc-badge" style="background:var(--blue);color:#fff">EDU</div>
+          </div>
+          <div class="mc-body">
+            <div class="mc-name">EDU CAMPUS</div>
+            <div class="mc-meta">
+              <div class="mc-players"><div class="mc-dot-live" style="background:var(--dim)"></div>8 / 50 online</div>
+              <span class="mc-tag" style="background:var(--blue);color:#fff">EDU</span>
+            </div>
+            <div class="mc-desc">Lecture halls, quiz zones and breakout rooms for online classes.</div>
+            <div class="mc-footer">
+              <span class="mc-host">HOST: YOU</span>
+              <button class="mc-enter-btn" style="background:var(--blue);color:#fff">ENTER ▶</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- WORLD 5 — favourite other -->
+        <div class="map-card" onclick="enterMap('XEON CONCERT','var(--orange)','🎵',890)">
+          <div class="mc-thumb" style="background:linear-gradient(135deg,#ff4d6d,#ff6d00)">
+            <div class="mc-grid-bg"></div>
+            <div class="mc-badge" style="background:var(--orange);color:#fff">LIVE</div>
+            <div class="mc-live"><div class="mc-live-dot"></div><span class="mc-live-txt">LIVE</span></div>
+          </div>
+          <div class="mc-body">
+            <div class="mc-name">XEON CONCERT</div>
+            <div class="mc-meta">
+              <div class="mc-players"><div class="mc-dot-live"></div>890 / 1000 online</div>
+              <span class="mc-tag" style="background:var(--orange);color:#fff">EVENT</span>
+            </div>
+            <div class="mc-desc">The biggest concert world in VORTEX. Stage, VIP zones and crowd areas.</div>
+            <div class="mc-footer">
+              <span class="mc-host">HOST: DJ_NOVA</span>
+              <button class="mc-enter-btn" style="background:var(--orange);color:#fff">ENTER ▶</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- CREATE NEW -->
+        <div class="map-card mc-create" onclick="null">
+          <div class="mc-create-ico">+</div>
+          <div class="mc-create-txt">CREATE NEW WORLD<br/><br/>FREE FOREVER</div>
+        </div>
+
+      </div>
+
+      <!-- BOTTOM ROW -->
+      <div class="dash-bottom">
+
+        <!-- ACTIVITY -->
+        <div class="act-box">
+          <div class="act-hdr">
+            <span class="act-hdr-t">⚡ RECENT ACTIVITY</span>
+            <button class="sec-hdr-btn" style="font-size:5px;padding:4px 8px">VIEW ALL</button>
+          </div>
+          <div class="act-row">
+            <div class="act-ico" style="background:#ffedf5">🏆</div>
+            <div class="act-info">
+              <div class="act-title">You reached RANK #01</div>
+              <div class="act-time">2 MINS AGO</div>
+            </div>
+            <span class="act-badge" style="background:var(--yellow);color:var(--ink)">RANK UP</span>
+          </div>
+          <div class="act-row">
+            <div class="act-ico" style="background:#eafff8">👥</div>
+            <div class="act-info">
+              <div class="act-title">PIXELWOLF joined your world</div>
+              <div class="act-time">14 MINS AGO</div>
+            </div>
+            <span class="act-badge" style="background:var(--green);color:var(--ink)">FRIEND</span>
+          </div>
+          <div class="act-row">
+            <div class="act-ico" style="background:#f5eeff">🏗️</div>
+            <div class="act-info">
+              <div class="act-title">BATTLE ARENA updated</div>
+              <div class="act-time">1H AGO</div>
+            </div>
+            <span class="act-badge" style="background:var(--purple);color:#fff">BUILD</span>
+          </div>
+          <div class="act-row">
+            <div class="act-ico" style="background:#ffedf5">🎮</div>
+            <div class="act-info">
+              <div class="act-title">Won trivia match in LOUNGE</div>
+              <div class="act-time">3H AGO</div>
+            </div>
+            <span class="act-badge" style="background:var(--pink);color:#fff">WIN</span>
+          </div>
+          <div class="act-row" style="border-bottom:none">
+            <div class="act-ico" style="background:#e6f4ff">📅</div>
+            <div class="act-info">
+              <div class="act-title">Concert event starts in 2h</div>
+              <div class="act-time">UPCOMING</div>
+            </div>
+            <span class="act-badge" style="background:var(--blue);color:#fff">EVENT</span>
+          </div>
+        </div>
+
+        <!-- QUICK STATS -->
+        <div class="qs-box">
+          <div class="qs-hdr"><div class="qs-hdr-t">📊 PLAYER STATS</div></div>
+          <div class="qs-body">
+            <div class="qs-row">
+              <div class="qs-lbl"><span>WORLDS VISITED</span><span style="color:var(--ink)">38 / 50</span></div>
+              <div class="qs-bar"><div class="qs-fill" style="width:76%;background:var(--purple)"></div></div>
+            </div>
+            <div class="qs-row">
+              <div class="qs-lbl"><span>EVENTS ATTENDED</span><span style="color:var(--ink)">12 / 20</span></div>
+              <div class="qs-bar"><div class="qs-fill" style="width:60%;background:var(--yellow)"></div></div>
+            </div>
+            <div class="qs-row">
+              <div class="qs-lbl"><span>MINI-GAMES WON</span><span style="color:var(--ink)">89%</span></div>
+              <div class="qs-bar"><div class="qs-fill" style="width:89%;background:var(--green)"></div></div>
+            </div>
+            <div class="qs-row">
+              <div class="qs-lbl"><span>BUILD SCORE</span><span style="color:var(--ink)">4,820 XP</span></div>
+              <div class="qs-bar"><div class="qs-fill" style="width:48%;background:var(--blue)"></div></div>
+            </div>
+            <div class="mr-hdr" style="margin-top:12px">FRIENDS ONLINE <span class="mr-hdr-tag">5 / 12</span></div>
+            <div class="qs-friends">
+              <div class="qf"><span class="qf-ava">🦊</span><div class="qf-nm">PIXEL</div><div class="qf-dot" style="background:var(--green)"></div></div>
+              <div class="qf"><span class="qf-ava">👾</span><div class="qf-nm">NULL</div><div class="qf-dot" style="background:var(--green)"></div></div>
+              <div class="qf"><span class="qf-ava">🧙</span><div class="qf-nm">MOCHI</div><div class="qf-dot" style="background:var(--green)"></div></div>
+              <div class="qf"><span class="qf-ava">🐉</span><div class="qf-nm">GHOST</div><div class="qf-dot" style="background:var(--yellow)"></div></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ══════════ MAP PAGE ══════════ -->
+<div id="page-map" class="page">
+<div class="app">
+
+  <!-- SIDEBAR (same) -->
+  <aside class="sidebar">
+    <div class="sb-logo"><div class="sb-logo-txt"><span>V</span><span>O</span><span>R</span><span>T</span><span>E</span><span>X</span></div></div>
+    <div class="sb-player">
+      <div class="sp-ava">🤖</div>
+      <div><div class="sp-name">XEON_J</div><div class="sp-rank">★ RANK #01 · LV.42</div></div>
+    </div>
+    <nav class="sb-nav">
+      <div class="sb-section">MAIN</div>
+      <div class="sb-link" onclick="showPage('dash')"><span class="sb-ico">🗺️</span><span class="sb-txt">MY WORLDS</span></div>
+      <div class="sb-link"><span class="sb-ico">🔍</span><span class="sb-txt">EXPLORE</span></div>
+      <div class="sb-link"><span class="sb-ico">⭐</span><span class="sb-txt">FAVOURITES</span></div>
+      <div class="sb-link"><span class="sb-ico">📅</span><span class="sb-txt">EVENTS</span><span class="sb-badge" style="background:var(--red);color:#fff">2</span></div>
+      <div class="sb-section">PLAYER</div>
+      <div class="sb-link"><span class="sb-ico">🏆</span><span class="sb-txt">LEADERBOARD</span></div>
+      <div class="sb-link"><span class="sb-ico">👥</span><span class="sb-txt">FRIENDS</span><span class="sb-badge" style="background:var(--green);color:var(--ink)">5</span></div>
+    </nav>
+    <div class="sb-footer"><button class="sb-lp-btn" onclick="showPage('dash')">← BACK TO DASH</button></div>
+  </aside>
+
+  <div class="main" style="position:relative">
+
+    <!-- MAP TOPBAR -->
+    <div class="map-topbar">
+      <div class="mt-back" onclick="showPage('dash')">← BACK</div>
+      <div class="mt-world-name" id="map-world-name">BATTLE ARENA</div>
+      <div class="mt-zone">📍 HUB PLAZA</div>
+      <div class="mt-spacer"></div>
+      <div class="mt-stat"><span>PLAYERS</span><b id="map-players">28/50</b></div>
+      <div class="mt-stat"><span>PING</span><b class="mt-ping">8ms</b></div>
+      <div class="mt-stat"><span>ZONE</span><b>HUB</b></div>
+      <button class="mt-btn" style="background:var(--yellow);color:var(--ink)">🔧 EDIT</button>
+      <button class="mt-btn" style="background:var(--red);color:#fff">⚙ SETTINGS</button>
+      <button class="mt-btn" style="background:var(--purple);color:#fff">👥 INVITE</button>
+    </div>
+
+    <!-- MAP CANVAS -->
+    <div class="map-canvas-wrap" id="map-canvas">
+
+      <!-- TOOLBAR -->
+      <div class="map-toolbar">
+        <div class="tool-btn sel" title="Move">🚶</div>
+        <div class="tool-btn" title="Build">🏗️</div>
+        <div class="tool-btn" title="Interact">👆</div>
+        <div class="tool-btn" title="Camera">📷</div>
+        <div style="width:38px;height:2px;background:var(--ink);margin:4px 0"></div>
+        <div class="tool-btn" title="Emote">😄</div>
+        <div class="tool-btn" title="Inventory">🎒</div>
+      </div>
+
+      <!-- ROOMS -->
+      <div class="world-room" style="left:120px;top:80px;width:140px;height:90px" id="room-hub" onclick="showRoomPopup(this,'HUB PLAZA','The main gathering zone',28,'var(--purple)')">
+        <span class="wr-ico">🏛️</span>
+        <span class="wr-name">HUB PLAZA</span>
+        <span class="wr-cnt">28 players</span>
+      </div>
+      <div class="world-room" style="left:320px;top:60px;width:120px;height:80px;border-color:var(--red);background:#fff5f7" onclick="showRoomPopup(this,'BATTLE ZONE','FPV combat area',14,'var(--red)')">
+        <span class="wr-ico">⚔️</span>
+        <span class="wr-name" style="color:var(--red)">BATTLE ZONE</span>
+        <span class="wr-cnt">14 players</span>
+      </div>
+      <div class="world-room" style="left:500px;top:80px;width:110px;height:80px;border-color:var(--green);background:#f0fff8" onclick="showRoomPopup(this,'VOICE LOUNGE','Proximity audio zone',6,'var(--green)')">
+        <span class="wr-ico">🎧</span>
+        <span class="wr-name" style="color:var(--green)">VOICE LOUNGE</span>
+        <span class="wr-cnt">6 players</span>
+      </div>
+      <div class="world-room" style="left:100px;top:240px;width:110px;height:80px;border-color:var(--yellow);background:#fffbe6" onclick="showRoomPopup(this,'SPAWN POINT','Entry zone',0,'var(--yellow)')">
+        <span class="wr-ico">✨</span>
+        <span class="wr-name" style="color:var(--orange)">SPAWN POINT</span>
+        <span class="wr-cnt">0 players</span>
+      </div>
+      <div class="world-room" style="left:280px;top:220px;width:130px;height:80px;border-color:var(--blue);background:#e6f4ff" onclick="showRoomPopup(this,'SCREEN ROOM','Share your screen',4,'var(--blue)')">
+        <span class="wr-ico">🖥️</span>
+        <span class="wr-name" style="color:var(--blue)">SCREEN ROOM</span>
+        <span class="wr-cnt">4 players</span>
+      </div>
+      <div class="world-room" style="left:470px;top:230px;width:120px;height:80px;border-color:var(--pink);background:#ffedf5" onclick="showRoomPopup(this,'EVENT STAGE','Live events & shows',12,'var(--pink)')">
+        <span class="wr-ico">🎵</span>
+        <span class="wr-name" style="color:var(--pink)">EVENT STAGE</span>
+        <span class="wr-cnt">12 players</span>
+      </div>
+      <div class="world-room" style="left:160px;top:390px;width:110px;height:75px" onclick="showRoomPopup(this,'SHOP','Buy avatar items',0,'var(--orange)')">
+        <span class="wr-ico">🛒</span>
+        <span class="wr-name">SHOP</span>
+        <span class="wr-cnt">0 players</span>
+      </div>
+      <div class="world-room" style="left:340px;top:380px;width:120px;height:75px;border-color:var(--purple);background:#f5eeff" onclick="showRoomPopup(this,'MINI GAMES','Play embedded games',8,'var(--purple)')">
+        <span class="wr-ico">🎮</span>
+        <span class="wr-name" style="color:var(--purple)">MINI GAMES</span>
+        <span class="wr-cnt">8 players</span>
+      </div>
+      <div class="world-room" style="left:510px;top:380px;width:100px;height:75px" onclick="showRoomPopup(this,'PORTAL','Jump to other worlds',2,'var(--blue)')">
+        <span class="wr-ico">🌀</span>
+        <span class="wr-name">PORTAL</span>
+        <span class="wr-cnt">2 players</span>
+      </div>
+
+      <!-- SVG CONNECTORS -->
+      <svg class="room-svg" style="position:absolute;inset:48px 0 0 0;width:100%;height:100%">
+        <line x1="260" y1="125" x2="320" y2="100" stroke="#d4b8f0" stroke-width="2" stroke-dasharray="6,4"/>
+        <line x1="190" y1="125" x2="190" y2="240" stroke="#d4b8f0" stroke-width="2" stroke-dasharray="6,4"/>
+        <line x1="380" y1="140" x2="350" y2="220" stroke="#d4b8f0" stroke-width="2" stroke-dasharray="6,4"/>
+        <line x1="440" y1="100" x2="500" y2="100" stroke="#d4b8f0" stroke-width="2" stroke-dasharray="6,4"/>
+        <line x1="555" y1="160" x2="530" y2="230" stroke="#d4b8f0" stroke-width="2" stroke-dasharray="6,4"/>
+        <line x1="215" y1="280" x2="280" y2="270" stroke="#d4b8f0" stroke-width="2" stroke-dasharray="6,4"/>
+        <line x1="220" y1="310" x2="220" y2="390" stroke="#d4b8f0" stroke-width="2" stroke-dasharray="6,4"/>
+        <line x1="410" y1="300" x2="400" y2="380" stroke="#d4b8f0" stroke-width="2" stroke-dasharray="6,4"/>
+        <line x1="530" y1="310" x2="560" y2="380" stroke="#d4b8f0" stroke-width="2" stroke-dasharray="6,4"/>
+      </svg>
+
+      <!-- PLAYER AVATARS -->
+      <div class="player-ava" id="pa-you" style="left:175px;top:170px">
+        <div class="pa-bubble" style="border-color:var(--purple);color:var(--purple)">YOU</div>
+        <div class="pa-sprite" style="background:#f5eeff;border-color:var(--purple)">🤖</div>
+      </div>
+      <div class="player-ava" id="pa-1" style="left:340px;top:90px">
+        <div class="pa-bubble">PIXELWOLF</div>
+        <div class="pa-sprite" style="background:#fff9e6">🦊</div>
+      </div>
+      <div class="player-ava" id="pa-2" style="left:520px;top:100px">
+        <div class="pa-bubble">NULL_7</div>
+        <div class="pa-sprite" style="background:#ffedf5">👾</div>
+      </div>
+      <div class="player-ava" id="pa-3" style="left:290px;top:245px">
+        <div class="pa-bubble">GHOST_X</div>
+        <div class="pa-sprite" style="background:#e6f4ff">🐉</div>
+      </div>
+
+      <!-- ROOM POPUP -->
+      <div class="room-popup" id="room-popup">
+        <div class="rp-close" onclick="closePopup()">✕</div>
+        <div class="rp-hdr" id="rp-name">HUB PLAZA</div>
+        <div class="rp-sub" id="rp-sub">The main gathering zone</div>
+        <div class="rp-row"><span>PLAYERS</span><b id="rp-players">28</b></div>
+        <div class="rp-row"><span>CAPACITY</span><b>50</b></div>
+        <div class="rp-row"><span>AUDIO ZONE</span><b>ENABLED</b></div>
+        <button class="rp-btn" id="rp-enter-btn" style="color:#fff">▶ ENTER ROOM</button>
+      </div>
+
+      <!-- MINIMAP -->
+      <div class="minimap">
+        <div class="mm-title">MINIMAP</div>
+        <div class="mm-grid">
+          <div class="mm-room" style="left:14%;top:10%;width:20%;height:22%"></div>
+          <div class="mm-room" style="left:42%;top:8%;width:18%;height:20%"></div>
+          <div class="mm-room" style="left:66%;top:10%;width:17%;height:20%"></div>
+          <div class="mm-room" style="left:12%;top:52%;width:17%;height:20%"></div>
+          <div class="mm-room" style="left:38%;top:50%;width:19%;height:20%"></div>
+          <div class="mm-room" style="left:64%;top:52%;width:18%;height:20%"></div>
+          <div class="mm-you"></div>
+        </div>
+      </div>
+
+      <!-- ZOOM -->
+      <div class="zoom-ctrl">
+        <div class="zc-btn">+</div>
+        <div class="zc-btn">−</div>
+        <div class="zc-btn" title="Reset">⌂</div>
+      </div>
+
+      <!-- VOICE BAR -->
+      <div class="voice-bar">
+        <span class="vb-icon">🎤</span>
+        <div class="vb-waves">
+          <div class="vb-w"></div><div class="vb-w"></div><div class="vb-w"></div>
+          <div class="vb-w"></div><div class="vb-w"></div>
+        </div>
+        <span class="vb-txt">SPATIAL AUDIO: ON</span>
+        <button class="vb-mute">MUTE</button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- RIGHT PANEL -->
+  <div class="map-right">
+    <div class="mr-section" style="padding-top:62px">
+      <div class="mr-hdr">PLAYERS ONLINE <span class="mr-hdr-tag" id="mr-count">28/50</span></div>
+      <div class="pl-row">
+        <div class="pl-ava" style="background:#f5eeff;border-color:var(--purple)">🤖</div>
+        <div class="pl-info"><div class="pl-name">XEON_J (YOU)</div><div class="pl-zone">HUB PLAZA</div></div>
+        <div class="pl-status" style="background:var(--green)"></div>
+      </div>
+      <div class="pl-row">
+        <div class="pl-ava" style="background:#fff9e6">🦊</div>
+        <div class="pl-info"><div class="pl-name">PIXELWOLF</div><div class="pl-zone">BATTLE ZONE</div></div>
+        <div class="pl-status" style="background:var(--green)"></div>
+      </div>
+      <div class="pl-row">
+        <div class="pl-ava" style="background:#ffedf5">👾</div>
+        <div class="pl-info"><div class="pl-name">NULL_7</div><div class="pl-zone">VOICE LOUNGE</div></div>
+        <div class="pl-status" style="background:var(--green)"></div>
+      </div>
+      <div class="pl-row">
+        <div class="pl-ava" style="background:#e6f4ff">🐉</div>
+        <div class="pl-info"><div class="pl-name">GHOST_X</div><div class="pl-zone">SCREEN ROOM</div></div>
+        <div class="pl-status" style="background:var(--yellow)"></div>
+      </div>
+      <div class="pl-row">
+        <div class="pl-ava" style="background:#eafff8">🧙</div>
+        <div class="pl-info"><div class="pl-name">MOCHI_0</div><div class="pl-zone">EVENT STAGE</div></div>
+        <div class="pl-status" style="background:var(--green)"></div>
+      </div>
+    </div>
+
+    <div class="chat-area mr-section" style="border-bottom:none">
+      <div class="mr-hdr">WORLD CHAT <span class="mr-hdr-tag">LIVE</span></div>
+      <div class="chat-msgs" id="chat-msgs">
+        <div class="chat-msg">
+          <div class="cm-ava">🦊</div>
+          <div class="cm-body"><div class="cm-name" style="color:var(--green)">PIXELWOLF</div><div class="cm-txt">yo that battle zone is insane 🔥</div></div>
+        </div>
+        <div class="chat-msg">
+          <div class="cm-ava">👾</div>
+          <div class="cm-body"><div class="cm-name" style="color:var(--pink)">NULL_7</div><div class="cm-txt">need more spawn tiles tho</div></div>
+        </div>
+        <div class="chat-msg" style="flex-direction:row-reverse">
+          <div class="cm-ava" style="background:#f5eeff;border-color:var(--purple)">🤖</div>
+          <div class="cm-body" style="text-align:right"><div class="cm-name" style="color:var(--purple)">YOU</div><div class="cm-txt mine">working on it rn</div></div>
+        </div>
+        <div class="chat-msg">
+          <div class="cm-ava">🐉</div>
+          <div class="cm-body"><div class="cm-name" style="color:var(--blue)">GHOST_X</div><div class="cm-txt">can someone open the portal?</div></div>
+        </div>
+        <div class="chat-msg">
+          <div class="cm-ava">🧙</div>
+          <div class="cm-body"><div class="cm-name" style="color:var(--orange)">MOCHI_0</div><div class="cm-txt">event stage is 🔥🔥🔥</div></div>
+        </div>
+      </div>
+      <div class="chat-input-row">
+        <input class="chat-inp" type="text" placeholder="Say something..." id="chat-inp" onkeydown="sendChat(event)"/>
+        <button class="chat-send" onclick="sendChatBtn()">▶</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<script>
+function showPage(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  window.scrollTo(0,0);
+}
+
+function enterMap(name, color, ico, players){
+  document.getElementById('map-world-name').textContent = name;
+  document.getElementById('map-players').textContent = players + '/50';
+  document.getElementById('mr-count').textContent = players + '/50';
+  showPage('map');
+}
+
+function showRoomPopup(el, name, desc, players, color){
+  const popup = document.getElementById('room-popup');
+  document.getElementById('rp-name').textContent = name;
+  document.getElementById('rp-sub').textContent = desc;
+  document.getElementById('rp-players').textContent = players;
+  const btn = document.getElementById('rp-enter-btn');
+  btn.style.background = color.replace('var(','').replace(')','');
+  const rect = el.getBoundingClientRect();
+  const canvas = document.getElementById('map-canvas');
+  const canvasRect = canvas.getBoundingClientRect();
+  let left = el.offsetLeft + el.offsetWidth + 8;
+  let top = el.offsetTop;
+  if(left + 220 > canvas.offsetWidth) left = el.offsetLeft - 228;
+  popup.style.left = left + 'px';
+  popup.style.top = top + 'px';
+  popup.style.display = 'block';
+  btn.style.background = '';
+  btn.setAttribute('data-color', color);
+  btn.style.cssText = 'width:100%;font-family:var(--px);font-size:7px;border:2px solid var(--ink);padding:8px;cursor:pointer;margin-top:10px;transition:all .1s;box-shadow:2px 2px 0 var(--ink);background:var(--purple);color:#fff';
+}
+
+function closePopup(){
+  document.getElementById('room-popup').style.display='none';
+}
+
+document.getElementById('map-canvas').addEventListener('click', function(e){
+  if(!e.target.closest('.world-room') && !e.target.closest('.room-popup')){
+    closePopup();
+  }
+});
+
+function sendChat(e){ if(e.key==='Enter') sendChatBtn(); }
+function sendChatBtn(){
+  const inp = document.getElementById('chat-inp');
+  const msg = inp.value.trim();
+  if(!msg) return;
+  const msgs = document.getElementById('chat-msgs');
+  const div = document.createElement('div');
+  div.className = 'chat-msg';
+  div.style.flexDirection = 'row-reverse';
+  div.innerHTML = `<div class="cm-ava" style="background:#f5eeff;border-color:var(--purple)">🤖</div><div class="cm-body" style="text-align:right"><div class="cm-name" style="color:var(--purple)">YOU</div><div class="cm-txt mine">${msg}</div></div>`;
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+  inp.value = '';
+}
+
+// animate player avatars on map
+const positions = [
+  [{l:175,t:170},{l:130,t:200},{l:200,t:260},{l:175,t:170}],
+  [{l:340,t:90},{l:380,t:130},{l:340,t:90}],
+  [{l:520,t:100},{l:480,t:150},{l:520,t:240},{l:520,t:100}],
+  [{l:290,t:245},{l:350,t:280},{l:290,t:380},{l:290,t:245}],
+];
+const paIds = ['pa-you','pa-1','pa-2','pa-3'];
+paIds.forEach((id,i)=>{
+  let step = 0;
+  const el = document.getElementById(id);
+  if(!el) return;
+  setInterval(()=>{
+    step = (step+1) % positions[i].length;
+    const pos = positions[i][step];
+    el.style.left = pos.l + 'px';
+    el.style.top = pos.t + 'px';
+  }, 3000 + i*700);
+});
+</script>
+</body>
+</html>

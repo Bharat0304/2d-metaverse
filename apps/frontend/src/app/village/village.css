@@ -1,0 +1,91 @@
+:root {
+  --village-green: #2d6a4f;
+  --village-light-green: #d8f3dc;
+  --village-teal: #1b4332;
+  --village-brown: #7f5539;
+  --village-tan: #ede0d4;
+  --village-accent: #ffb703;
+  --village-ink: #1a1a1a;
+}
+
+.village-theme {
+  --purple: var(--village-green);
+  --pink: var(--village-brown);
+  --green: var(--village-teal);
+  --yellow: var(--village-accent);
+  --bg: #f8f9fa;
+  --ink: var(--village-ink);
+}
+
+.village-theme .checker {
+  background-image: linear-gradient(45deg, rgba(45, 106, 79, 0.05) 25%, transparent 25%),
+    linear-gradient(-45deg, rgba(45, 106, 79, 0.05) 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, rgba(45, 106, 79, 0.05) 75%),
+    linear-gradient(-45deg, transparent 75%, rgba(45, 106, 79, 0.05) 75%);
+}
+
+.village-banner {
+  background: linear-gradient(135deg, var(--village-green), var(--village-teal)) !important;
+  box-shadow: 6px 6px 0 var(--village-ink) !important;
+}
+
+.village-canvas-wrap {
+  background-color: #e9f5db !important;
+  background-image: 
+    radial-gradient(var(--village-green) 0.5px, transparent 0.5px),
+    radial-gradient(var(--village-green) 0.5px, #e9f5db 0.5px) !important;
+  background-size: 20px 20px !important;
+  background-position: 0 0, 10px 10px !important;
+  border: 4px solid var(--village-ink);
+}
+
+.village-room {
+  background: #fff !important;
+  border-radius: 4px;
+}
+
+.village-room:hover {
+  background: var(--village-light-green) !important;
+}
+
+.village-topbar {
+  border-bottom: 3px solid var(--village-ink) !important;
+}
+
+.village-bg-1 {
+  background: linear-gradient(135deg, #a7c957, #6a994e) !important;
+}
+
+.village-bg-2 {
+  background: linear-gradient(135deg, #386641, #bc4749) !important;
+}
+
+.village-theme .sb-link.active {
+    background: #e9f5db !important;
+    border-left-color: var(--village-green) !important;
+}
+
+.village-theme .sb-logo-txt span {
+    color: var(--village-green) !important;
+}
+
+.village-theme .mc-body {
+    border-top: 2px solid var(--village-ink);
+}
+
+.village-theme .topbar {
+    border-bottom: 3px solid var(--village-ink);
+}
+
+#game-container {
+    width: 100%;
+    height: 100%;
+    background: #000;
+}
+
+#game-container canvas {
+    display: block;
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: contain;
+}
