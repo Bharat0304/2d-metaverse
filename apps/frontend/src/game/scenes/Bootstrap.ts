@@ -65,7 +65,7 @@ export class Bootstrap extends Phaser.Scene {
     }
 
     create() {
-        this.launchGame();
+        // Wait for UI to trigger launchGame
     }
 
     launchGame() {

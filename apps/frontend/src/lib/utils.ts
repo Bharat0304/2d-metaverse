@@ -10,7 +10,7 @@ export const sanitizeUserIdForVideoCalling = (userId: string) => {
 };
 
 export const sanitizeUserIdForScreenSharing = (userId: string) => {
-    return `${userId.replace(/[^0-9a-z]/gi, "X")}-ss`;
+    return `ss-${userId ? userId.replace(/[^0-9a-z]/gi, "X") : "unknown"}-ss`;
 };
 
 export type officeNames =
