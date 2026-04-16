@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
-import { TILE, type Player, type NPC, type Direction } from "../types/village";
+import { TILE, type Player, type NPC, type Direction } from "@/types";
 
 // ── walk animation frame lookup ─────────────────────
 // For an RPG Maker style 3×4 sheet: cols=left/center/right, rows=down/left/right/up

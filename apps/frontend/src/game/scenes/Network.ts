@@ -30,6 +30,8 @@ export default class Network {
     private character = "";
     private _sessionId = "";
     private spaceId = "";
+    private _gameSceneReady = false;
+    private _joinComplete = false;
 
     // Called by Bootstrap
     constructor() {
@@ -50,6 +52,8 @@ export default class Network {
         this.spaceId   = "public";
         await this.connect();
         store.dispatch(setIsLoading(false));
+        this._joinComplete = true;
+        if (this._gameSceneReady) this._emitInitPlayer();
     };
 
     createCustomRoom = async (
@@ -64,6 +68,8 @@ export default class Network {
         this.spaceId   = roomName;
         await this.connect();
         store.dispatch(setIsLoading(false));
+        this._joinComplete = true;
+        if (this._gameSceneReady) this._emitInitPlayer();
     };
 
     joinCustomRoom = async (
@@ -78,6 +84,8 @@ export default class Network {
         this.spaceId   = roomId;
         await this.connect();
         store.dispatch(setIsLoading(false));
+        this._joinComplete = true;
+        if (this._gameSceneReady) this._emitInitPlayer();
     };
 
     // ── WebSocket connection ──────────────────────────────────────────────────
@@ -257,8 +265,17 @@ export default class Network {
         return { members: new Map<string, string>(), chat: [] };
     }
 
-    /** handleServerMessages is called by GameScene.create() after listeners are added */
+    /** handleServerMessages is called by GameScene.create() after listeners are added.
+     *  We mark the scene as ready and only emit INITIALIZE_PLAYER once the join
+     *  has also completed (i.e. character/username are set). This prevents the
+     *  player from being created with empty strings when GameScene starts before join.
+     */
     handleServerMessages = () => {
+        this._gameSceneReady = true;
+        if (this._joinComplete) this._emitInitPlayer();
+    };
+
+    private _emitInitPlayer() {
         phaserEvents.emit(
             Event.INITIALIZE_PLAYER,
             this.character,
@@ -267,7 +284,7 @@ export default class Network {
             500, // spawn X
             500  // spawn Y
         );
-    };
+    }
 
     // ── Helpers ───────────────────────────────────────────────────────────────
 

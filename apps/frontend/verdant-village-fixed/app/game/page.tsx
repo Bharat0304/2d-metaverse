@@ -1,7 +1,7 @@
 "use client";
 import dynamic from "next/dynamic";
 
-const VillageGame = dynamic(() => import("../../components/VillageGame"), {
+const VillageGame = dynamic(() => import("@/components/VillageGame"), {
   ssr: false,
   loading: () => (
     <div className="flex items-center justify-center w-[960px] h-[640px] bg-[#1a2820]">
@@ -17,12 +17,12 @@ const VillageGame = dynamic(() => import("../../components/VillageGame"), {
   ),
 });
 
-export default function VillageDashboard() {
+export default function GamePage() {
   return (
-    <main className="min-h-screen bg-[#0d1a0d] flex items-center justify-center w-full">
+    <main className="min-h-screen bg-[#0d1a0d] flex items-center justify-center">
       <div className="flex flex-col items-center gap-3">
         <VillageGame />
-        <p className="font-['Press_Start_2P'] text-[10px] text-[#4a8a3c] tracking-wider mt-4">
+        <p className="font-['Press_Start_2P'] text-[6px] text-[#4a8a3c] tracking-wider">
           🌿 VERDANT VILLAGE · WASD TO MOVE · E TO INTERACT · ENTER TO CHAT
         </p>
       </div>

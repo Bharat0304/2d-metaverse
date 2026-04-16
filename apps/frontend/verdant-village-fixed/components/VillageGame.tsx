@@ -1,8 +1,8 @@
 "use client";
 
 import { useRef } from "react";
-import { TILE, COLS, ROWS, VP_W, VP_H } from "../types/village";
-import { useVillageEngine } from "../lib/useVillageEngine";
+import { TILE, COLS, ROWS, VP_W, VP_H } from "@/types";
+import { useVillageEngine } from "@/lib/useVillageEngine";
 import TileCanvas from "./TileCanvas";
 import { Avatar } from "./Avatar";
 import HUD from "./HUD";

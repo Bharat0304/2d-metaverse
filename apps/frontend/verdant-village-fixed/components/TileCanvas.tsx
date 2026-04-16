@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useEffect, memo } from "react";
-import { TILE, COLS, ROWS } from "../types/village";
+import { TILE, COLS, ROWS } from "@/types";
 import { BASE_MAP, OBJECTS } from "@/lib/mapData";
 
 // terrains.png  768×768 → 16 cols × 16 rows @ 48px

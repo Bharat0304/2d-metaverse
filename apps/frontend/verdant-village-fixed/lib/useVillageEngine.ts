@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import {
   TILE, COLS, ROWS, MOVE_SPEED,
   type Player, type NPC, type ChatMessage, type Direction,
-} from "../types/village";
+} from "@/types";
 import { OBJECTS, NPC_DEFS, buildCollisionMap } from "@/lib/mapData";
 
 const CHAT_TIMEOUT = 5000;

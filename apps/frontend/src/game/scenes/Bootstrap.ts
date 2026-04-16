@@ -50,7 +50,7 @@ export class Bootstrap extends Phaser.Scene {
         
         this.load.spritesheet("village_campfire", "assets/village/campfire_32x32.png", { frameWidth: 32, frameHeight: 32 });
         this.load.spritesheet("village_water", "assets/village/water_waves_32x32.png", { frameWidth: 32, frameHeight: 32 });
-        this.load.spritesheet("village_door", "assets/village/door_32x32.png", { frameWidth: 32, frameHeight: 48 });
+        this.load.spritesheet("village_door", "assets/village/door_32x32.png", { frameWidth: 32, frameHeight: 32 });
 
 
         this.load.svg("mic-on", "assets/items/mic-on.svg");

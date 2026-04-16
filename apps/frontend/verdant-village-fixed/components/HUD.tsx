@@ -1,8 +1,8 @@
 "use client";
 
 import { useRef, useEffect, useState } from "react";
-import type { ChatMessage, NPC, Player } from "../types/village";
-import { TILE, COLS, ROWS } from "../types/village";
+import type { ChatMessage, NPC, Player } from "@/types";
+import { TILE, COLS, ROWS } from "@/types";
 import { OBJECTS } from "@/lib/mapData";
 
 const EMOTE_LIST = ["👋", "❤️", "😄", "🎉", "👍", "🎵", "⭐", "😂", "🔥", "💤"];

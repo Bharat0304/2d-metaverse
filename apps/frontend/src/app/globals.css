@@ -138,3 +138,11 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Verdant Village Theme */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: #1a2820; }
+::-webkit-scrollbar-thumb { background: #4a8a3c; }
+::-webkit-scrollbar-thumb:hover { background: #68c055; }
+
+canvas { image-rendering: pixelated; image-rendering: crisp-edges; }

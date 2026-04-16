@@ -2,8 +2,10 @@
 
 import { useState, useEffect, useRef } from 'react';
 import './dashboard.css';
+import { useRouter } from 'next/navigation';
 
 export default function Dashboard() {
+  const router = useRouter();
   const [activePage, setActivePage] = useState('dash');
   const [mapDetails, setMapDetails] = useState({ name: 'BATTLE ARENA', players: 28 });
   const [chatMsg, setChatMsg] = useState('');
@@ -224,16 +226,22 @@ export default function Dashboard() {
 
               <div className="maps-grid">
                 <WorldCard 
+                  name="VERDANT VILLAGE" players={12} maxPlayers={50} tag="VILLAGE" type="SOCIAL" live 
+                  desc="A peaceful village to interact, walk around, chat and explore with friends."
+                  color="var(--green)" bg="linear-gradient(135deg,#68c055,#4a8a3c)" badge="★ NEW"
+                  onEnter={() => router.push('/village')}
+                />
+                <WorldCard 
+                  name="MAIN GAME PORTAL" players={85} maxPlayers={100} tag="CITY" type="SOCIAL" live 
+                  desc="The main metaverse world with full interactions, voice chat and more."
+                  color="var(--purple)" bg="linear-gradient(135deg,#9b5de5,#f15bb5)" badge="HOT"
+                  onEnter={() => router.push('/game')}
+                />
+                <WorldCard 
                   name="BATTLE ARENA" players={28} maxPlayers={50} tag="COMBAT" type="PVP" live 
                   desc="My PVP world with custom spawn zones, weapon tiles and ranked matches."
                   color="var(--red)" bg="linear-gradient(135deg,#ffd166,#ff4d6d)"
                   onEnter={() => enterMap('BATTLE ARENA', 28)}
-                />
-                <WorldCard 
-                  name="CHILL OFFICE" players={12} maxPlayers={30} tag="WORK" type="WORK" live 
-                  desc="Team workspace with screen share zones, whiteboard rooms and focus areas."
-                  color="var(--green)" bg="linear-gradient(135deg,#06d6a0,#118ab2)"
-                  onEnter={() => enterMap('CHILL OFFICE', 12)}
                 />
                 <WorldCard 
                   name="PIXEL LOUNGE" players={44} maxPlayers={100} tag="SOCIAL" type="SOCIAL" 
