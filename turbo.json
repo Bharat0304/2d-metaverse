@@ -25,7 +25,8 @@
     "db:generate": {
       "inputs": ["prisma/schema.prisma"],
       "outputs": ["generated/**"],
-      "cache": true
+      "cache": true,
+      "env": ["DATABASE_URL"]
     },
     "db:migrate":{
       "cache": false,
