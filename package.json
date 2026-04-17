@@ -2,8 +2,14 @@
   "name": "zep",
   "private": true,
   "workspaces": [
-    "apps/*",
-    "packages/*"
+    "apps/frontend",
+    "apps/http",
+    "apps/ws",
+    "apps/client",
+    "packages/db",
+    "packages/ui",
+    "packages/typescript-config",
+    "packages/eslint-config"
   ],
   "scripts": {
     "build": "turbo run build",
