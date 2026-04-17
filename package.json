@@ -16,5 +16,14 @@
   "packageManager": "pnpm@10.5.2",
   "engines": {
     "node": "22.x"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@prisma/engines",
+      "prisma",
+      "bcrypt",
+      "esbuild",
+      "sharp"
+    ]
   }
 }
