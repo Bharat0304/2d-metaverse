@@ -1,6 +1,10 @@
 {
   "name": "zep",
   "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
   "scripts": {
     "build": "turbo run build",
     "dev": "turbo run dev",
@@ -13,17 +17,8 @@
     "turbo": "^2.8.3",
     "typescript": "5.9.2"
   },
-  "packageManager": "pnpm@10.5.2",
+  "packageManager": "npm@10.5.0",
   "engines": {
     "node": "22.x"
-  },
-  "pnpm": {
-    "onlyBuiltDependencies": [
-      "@prisma/engines",
-      "prisma",
-      "bcrypt",
-      "esbuild",
-      "sharp"
-    ]
   }
 }
