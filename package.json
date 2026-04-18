@@ -1,16 +1,7 @@
 {
   "name": "zep",
   "private": true,
-  "workspaces": [
-    "apps/frontend",
-    "apps/http",
-    "apps/ws",
-    "apps/client",
-    "packages/db",
-    "packages/ui",
-    "packages/typescript-config",
-    "packages/eslint-config"
-  ],
+  "packageManager": "pnpm@9.1.4",
   "scripts": {
     "build": "turbo run build",
     "dev": "turbo run dev",
@@ -23,7 +14,6 @@
     "turbo": "^2.8.3",
     "typescript": "5.9.2"
   },
-  "packageManager": "npm@10.5.0",
   "engines": {
     "node": "22.x"
   }

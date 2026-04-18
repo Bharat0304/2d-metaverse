@@ -1,0 +1,16 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { color-scheme: light; }
+body { background: #5aaa48; overflow: hidden; }
+
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: #e8e0d0; }
+::-webkit-scrollbar-thumb { background: #4a8a3c; }
+
+canvas { image-rendering: pixelated; image-rendering: crisp-edges; }
+
+/* Pixel button active state */
+button:focus-visible { outline: 2px solid #4a8a3c; outline-offset: 2px; }
