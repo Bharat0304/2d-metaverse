@@ -31,7 +31,7 @@ export default function LandingPage() {
                         <div className="h"></div><div className="h"></div><div className="h"></div>
                     </div>
                     <button className="nbtn nbtn-log" onClick={() => go('/login')}>LOG IN</button>
-                    <button className="nbtn nbtn-play" onClick={() => go('/signup')}>▶ SIGN UP</button>
+                    <button className="nbtn nbtn-play" onClick={() => go('/dashboard')}>▶ PLAY FREE</button>
                 </div>
             </nav>
 
@@ -55,7 +55,7 @@ export default function LandingPage() {
                         Like Gather Town or ZEP — but built for real gamers.
                     </p>
                     <div className="hero-btns">
-                        <button className="pbtn pb-r" onClick={() => go('/signup')}>▶ PLAY FREE</button>
+                        <button className="pbtn pb-r" onClick={() => go('/dashboard')}>▶ PLAY FREE</button>
                         <button className="pbtn pb-y" onClick={() => go('/dashboard')}>★ BUILD WORLD</button>
                         <button className="pbtn pb-g">◈ WATCH TRAILER</button>
                         <button className="pbtn pb-p" onClick={() => go('/login')}>↩ LOG IN</button>
@@ -202,7 +202,7 @@ export default function LandingPage() {
                     <div className="wc" onClick={() => go('/dashboard')}><div className="wt wt3"><span className="wt-ico">🎉</span></div><div className="wb"><div className="wc-tag">SOCIAL HUB</div><div className="wc-nm">HANGOUT ZONE</div><div className="wc-bot"><div className="wc-pl">● 3,107 online</div><span className="pill" style={{ background: 'var(--pink)', color: '#fff' }}>SOCIAL</span></div></div></div>
                     <div className="wc" onClick={() => go('/dashboard')}><div className="wt wt4"><span className="wt-ico">📚</span></div><div className="wb"><div className="wc-tag">EDUCATION</div><div className="wc-nm">CAMPUS</div><div className="wc-bot"><div className="wc-pl">● 440 online</div><span className="pill" style={{ background: 'var(--blue)', color: '#fff' }}>EDU</span></div></div></div>
                     <div className="wc" onClick={() => go('/dashboard')}><div className="wt wt5"><span className="wt-ico">🎵</span></div><div className="wb"><div className="wc-tag">LIVE EVENT</div><div className="wc-nm">CONCERT HALL</div><div className="wc-bot"><div className="wc-pl">● 5,600 online</div><span className="pill" style={{ background: 'var(--orange)', color: '#fff' }}>LIVE</span></div></div></div>
-                    <div className="wc" onClick={() => go('/signup')}><div className="wt wt6"><span className="wt-ico" style={{ color: '#bbb', fontSize: '28px' }}>+</span></div><div className="wb"><div className="wc-tag">YOURS TO MAKE</div><div className="wc-nm">BUILD CUSTOM</div><div className="wc-bot"><div className="wc-pl">★ Start free →</div><span className="pill" style={{ background: 'var(--yellow)', color: 'var(--ink)' }}>FREE</span></div></div></div>
+                    <div className="wc" onClick={() => go('/dashboard')}><div className="wt wt6"><span className="wt-ico" style={{ color: '#bbb', fontSize: '28px' }}>+</span></div><div className="wb"><div className="wc-tag">YOURS TO MAKE</div><div className="wc-nm">BUILD CUSTOM</div><div className="wc-bot"><div className="wc-pl">★ Start free →</div><span className="pill" style={{ background: 'var(--yellow)', color: 'var(--ink)' }}>FREE</span></div></div></div>
                 </div>
             </section>
 
@@ -255,7 +255,7 @@ export default function LandingPage() {
                     <p className="cta-sb">FREE TO START · NO DOWNLOAD · RUNS IN BROWSER</p>
                     <div className="cta-row">
                         <input className="cta-inp" type="text" placeholder="ENTER YOUR USERNAME..." value={username} onChange={e => setUsername(e.target.value)} />
-                        <button className="cta-b" onClick={() => go('/signup')}>▶ SPAWN IN</button>
+                        <button className="cta-b" onClick={() => go('/dashboard')}>▶ SPAWN IN</button>
                     </div>
                     <p className="cta-nt">// NO CREDIT CARD · FREE FOREVER FOR PUBLIC WORLDS</p>
                 </div>

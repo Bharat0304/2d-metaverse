@@ -1,1 +1,1 @@
-{"root":["./src/index.ts","./src/routes/v1/auth.ts","./src/types/index.ts"],"version":"5.9.3"}
+{"root":["./src/index.ts","./src/routes/v1/auth.ts","./src/routes/v1/discord.ts","./src/routes/v1/google.ts","./src/routes/v1/space.ts","./src/types/index.ts"],"version":"5.9.3"}

@@ -2,7 +2,7 @@ import NextAuth from "next-auth"
 import Google from "next-auth/providers/google"
 import Credentials from "next-auth/providers/credentials"
 
-export const { handlers, auth, signIn, signOut } = NextAuth({
+const nextAuthConfig = {
   providers: [
     Google({
       clientId: process.env.GOOGLE_CLIENT_ID,
@@ -31,7 +31,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     signIn: "/login",
   },
   callbacks: {
-    async session({ session, token }) {
+    async session({ session, token }: { session: any; token: any }) {
       if (token.sub && session.user) {
         session.user.id = token.sub
       }
@@ -39,4 +39,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     },
   },
   secret: process.env.NEXTAUTH_SECRET,
-})
+}
+
+export const { handlers, auth, signIn, signOut } = NextAuth(nextAuthConfig)
+export const authOptions = nextAuthConfig

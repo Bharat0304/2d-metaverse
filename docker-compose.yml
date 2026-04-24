@@ -1,0 +1,88 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: zep_db
+      POSTGRES_USER: zep_user
+      POSTGRES_PASSWORD: zep_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - zep-network
+
+  # HTTP API Server
+  api:
+    build:
+      context: .
+      dockerfile: apps/http/Dockerfile
+    ports:
+      - "4000:4000"
+    environment:
+      - DATABASE_URL=postgresql://zep_user:zep_password@postgres:5432/zep_db
+      - NODE_ENV=production
+      - JWT_SECRET=your-super-secret-jwt-key
+    depends_on:
+      - postgres
+    networks:
+      - zep-network
+
+  # WebSocket Server
+  websocket:
+    build:
+      context: .
+      dockerfile: apps/ws/Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      - DATABASE_URL=postgresql://zep_user:zep_password@postgres:5432/zep_db
+      - NODE_ENV=production
+    depends_on:
+      - postgres
+    networks:
+      - zep-network
+
+  # Frontend (Next.js)
+  frontend:
+    build:
+      context: .
+      dockerfile: apps/frontend/Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:4000
+      - NEXT_PUBLIC_WS_URL=ws://localhost:8080
+      - NEXTAUTH_SECRET=your-nextauth-secret
+      - NEXTAUTH_URL=http://localhost:3000
+    depends_on:
+      - api
+      - websocket
+    networks:
+      - zep-network
+
+  # Client App (Vite)
+  client:
+    build:
+      context: .
+      dockerfile: apps/client/Dockerfile
+    ports:
+      - "5173:5173"
+    environment:
+      - VITE_API_URL=http://localhost:4000
+      - VITE_WS_URL=ws://localhost:8080
+    depends_on:
+      - api
+      - websocket
+    networks:
+      - zep-network
+
+volumes:
+  postgres_data:
+
+networks:
+  zep-network:
+    driver: bridge

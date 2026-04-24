@@ -28,7 +28,7 @@ export default function SignupPage() {
 
     const handleSignup = (e: React.FormEvent) => {
         e.preventDefault();
-        router.push('/game');
+        router.push('/dashboard');
     };
 
     return (
@@ -51,7 +51,7 @@ export default function SignupPage() {
                         <div className="h"></div><div className="h"></div><div className="h"></div>
                     </div>
                     <button className="nbtn nbtn-log" onClick={() => router.push('/login')}>LOG IN</button>
-                    <button className="nbtn nbtn-play" onClick={() => router.push('/signup')}>▶ SIGN UP</button>
+                    <button className="nbtn nbtn-play" onClick={() => router.push('/dashboard')}>▶ PLAY FREE</button>
                 </div>
             </nav>
 
