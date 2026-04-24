@@ -178,7 +178,7 @@ export default function Dashboard() {
                   <div className="wb-sub">You have 2 live events and 5 friends online right now.</div>
                 </div>
                 <div className="wb-btns">
-                  <button className="wb-btn wb-btn-y">▶ QUICK SPAWN</button>
+                  <button className="wb-btn wb-btn-y" onClick={() => router.push('/game')}>▶ QUICK SPAWN</button>
                   <button className="wb-btn wb-btn-w">⚡ VIEW EVENTS</button>
                 </div>
               </div>
