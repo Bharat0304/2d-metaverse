@@ -123,7 +123,8 @@ const GameFooter = ({
                     ease: [0.25, 0.8, 0.25, 1],
                     delay: 0.3,
                 }}
-                className="absolute bottom-0 left-0 right-0 flex items-center justify-between bg-[#121214]/80 backdrop-blur-md shadow-black/30 shadow-lg rounded-lg px-4 py-3"
+                className="absolute bottom-0 left-0 right-0 flex items-center justify-between bg-[#121214]/80 backdrop-blur-md shadow-black/30 shadow-lg rounded-lg px-4 py-3 pointer-events-auto"
+
             >
                 {/* Left Side */}
                 <div className="flex items-center gap-3">
@@ -283,16 +284,16 @@ const GameFooter = ({
                     <Tooltip>
                         <TooltipTrigger asChild>
                             <Button
-                                variant="outline"
+                                variant="default"
                                 size="sm"
                                 className={`cursor-pointer transition-all ease-in-out ${
                                     showChat 
-                                        ? "bg-indigo-600/30 border-indigo-500/50" 
-                                        : "hover:bg-indigo-600/20 border-indigo-500/30"
+                                        ? "bg-indigo-600 border-indigo-500" 
+                                        : "bg-indigo-500 hover:bg-indigo-400 border-indigo-400"
                                 }`}
                                 onClick={() => setShowChat(!showChat)}
                             >
-                                <MessageCircle className="w-4 h-4 text-indigo-400" />
+                                <MessageCircle className="w-4 h-4 text-white" />
                             </Button>
                         </TooltipTrigger>
                         <TooltipContent>

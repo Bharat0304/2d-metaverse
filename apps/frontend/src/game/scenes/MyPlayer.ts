@@ -16,6 +16,7 @@ import {
     setPlayerNameMap,
 } from "../../store/features/webRtc/screenSlice";
 import { officeNames, sanitizeUserIdForScreenSharing } from "../../lib/utils";
+import { Event, phaserEvents } from "./EventBus";
 
 export class MyPlayer extends Player {
     private static SPEED = 300;
@@ -51,6 +52,8 @@ export class MyPlayer extends Player {
         this.officeManager = new OfficeManager();
         this.network = network;
         this.cursorKeys = cursorKeys;
+        this.lastX = x;
+        this.lastY = y;
     }
 
     private handlePlayerMovements() {
@@ -254,6 +257,31 @@ export class MyPlayer extends Player {
             .initializePeer(this.mySessionId)
             .then((peer) => console.log("screen peer:", peer.id))
             .catch((err) => console.error("Failed to init screen peer:", err));
+
+        // Set up WebRTC proximity event listeners
+        phaserEvents.on(Event.PROXIMITY_ENTER, this.handleProximityEnter, this);
+        phaserEvents.on(Event.PROXIMITY_LEAVE, this.handleProximityLeave, this);
+    };
+
+    private handleProximityEnter = async (remoteSessionId: string) => {
+        console.log(`Proximity enter: ${remoteSessionId}`);
+        // Use existing VideoCalling system for proximity
+        const myWebcamStream = store.getState().webcam.myWebcamStream;
+        console.log('My webcam stream:', myWebcamStream ? 'available' : 'not available');
+        if (myWebcamStream) {
+            console.log('Webcam stream available, sharing with peer...');
+            videoCalling.shareWebcam(remoteSessionId);
+        } else {
+            console.log('No webcam stream - enable camera first via the camera button');
+        }
+    };
+
+    private handleProximityLeave = (remoteSessionId: string) => {
+        console.log(`Proximity leave: ${remoteSessionId}`);
+        const webRTCManager = this.network.webrtcManager;
+        if (webRTCManager) {
+            webRTCManager.closeConnection(remoteSessionId);
+        }
     };
 
     update() {

@@ -1,8 +1,8 @@
 export {Router } from 'express';
 import { Router, type Request, type Response } from 'express';
-import { SignupRequestSchema } from '../../types/index.js';
+import { SignupRequestSchema, LoginRequestSchema } from '../../types/index.js';
 import {prisma }   from '@repo/db';
-import bcrypt from 'bcrypt';    
+import bcrypt from 'bcrypt';
 export const authRouter: Router = Router();
 authRouter.post('/signup',async(req:Request,res:Response)=>{
     const parsedData=SignupRequestSchema.safeParse(req.body);
@@ -30,24 +30,36 @@ authRouter.post('/signup',async(req:Request,res:Response)=>{
     }
 })
 authRouter.post('/login',async(req:Request,res:Response)=>{
-    const parsedData=SignupRequestSchema.safeParse(req.body);
+    const parsedData=LoginRequestSchema.safeParse(req.body);
     if(!parsedData.success){
         return res.status(400).json({error:parsedData.error});
     }
-  
+
     try{
         const user= await prisma.user.findUnique({
             where:{
                 email:parsedData.data.email,
-               
+
             }
         })
-        const hashedpassword=await bcrypt.compare(parsedData.data.password,user?.password || "");
-        if(!hashedpassword){
-            return res.status(401).json({error:"Invalid eeeemail or password"});
+
+        if (!user) {
+            return res.status(401).json({error:"Invalid email or password"});
         }
-       
-        return res.status(200).json({message:"Login successful"});
+
+        const isPasswordValid=await bcrypt.compare(parsedData.data.password,user.password);
+        if(!isPasswordValid){
+            return res.status(401).json({error:"Invalid email or password"});
+        }
+
+        return res.status(200).json({
+            message:"Login successful",
+            user: {
+                id: user.id,
+                name: user.name,
+                email: user.email
+            }
+        });
     }
     catch(error){
         console.error(error);

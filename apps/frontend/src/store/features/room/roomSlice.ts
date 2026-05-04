@@ -12,6 +12,7 @@ const roomSlice = createSlice({
         roomJoined: false,
         isLoading: true,
         availableRooms: new Array<RoomInfo>(),
+        spaceId: "",
     },
     reducers: {
         setRoomJoined: (state, action: PayloadAction<boolean>) => {
@@ -19,6 +20,9 @@ const roomSlice = createSlice({
         },
         setIsLoading: (state, action: PayloadAction<boolean>) => {
             state.isLoading = action.payload;
+        },
+        setSpaceId: (state, action: PayloadAction<string>) => {
+            state.spaceId = action.payload;
         },
         addAvailableRooms: (state, action: PayloadAction<RoomInfo>) => {
             state.availableRooms.push(action.payload);
@@ -34,6 +38,7 @@ const roomSlice = createSlice({
 export const {
     setRoomJoined,
     setIsLoading,
+    setSpaceId,
     addAvailableRooms,
     removeFromAvailableRooms,
 } = roomSlice.actions;

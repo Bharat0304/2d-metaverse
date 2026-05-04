@@ -1,14 +1,20 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 // Draws a looping pixel art village background
 export function GameBackground() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const frameRef  = useRef(0);
   const rafRef    = useRef<number>(0);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!mounted) return;
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
@@ -107,13 +113,15 @@ export function GameBackground() {
 
     rafRef.current = requestAnimationFrame(draw);
     return () => cancelAnimationFrame(rafRef.current);
-  }, []);
+  }, [mounted]);
+
+  if (!mounted) return null;
 
   return (
     <canvas
       ref={canvasRef}
-      width={typeof window !== "undefined" ? window.innerWidth : 1440}
-      height={typeof window !== "undefined" ? window.innerHeight : 900}
+      width={window.innerWidth}
+      height={window.innerHeight}
       style={{
         position: "fixed",
         inset: 0,

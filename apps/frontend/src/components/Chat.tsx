@@ -101,7 +101,7 @@ const Chat = ({ setShowChat }: ChatProps) => {
     const activeChatCss = "bg-indigo-500 text-indigo-50";
 
     return (
-        <div ref={chatBoxRef} className="absolute right-0 top-3 bottom-15 w-fit lg:w-96 h-[100vh-12px] rounded-sm border bg-indigo-950 border-indigo-500 text-white flex flex-col px-2 pointer-events-auto">
+        <div ref={chatBoxRef} className="absolute left-4 bottom-20 w-80 lg:w-96 h-96 rounded-xl border bg-gray-900/95 backdrop-blur-md border-gray-700/50 shadow-2xl text-white flex flex-col p-3 z-[60] pointer-events-auto transition-all duration-300">
             <div className="flex items-center justify-around gap-1">
                 {showOfficeChat ? (
                     <div className="flex items-center justify-between gap-1 w-full mt-3">
@@ -133,10 +133,10 @@ const Chat = ({ setShowChat }: ChatProps) => {
                         </Button>
                     </div>
                 ) : (
-                    <div className="flex items-center justify-between gap-1 w-full mt-3">
-                        <Button className="font-semibold text-lg text-center grow cursor-default rounded-xs bg-indigo-500 text-indigo-50 hover:bg-indigo-500">
+                    <div className="flex items-center justify-between gap-1 w-full mt-1">
+                        <div className="font-bold text-lg text-white ml-2">
                             Global Chat
-                        </Button>
+                        </div>
                         <Button
                             variant="secondary"
                             className="rounded-xs cursor-pointer"
@@ -198,8 +198,8 @@ const Chat = ({ setShowChat }: ChatProps) => {
                 onSubmit={handleSubmit}
             >
                 <Input
-                    className="pr-[35px]"
-                    placeholder="type here...."
+                    className="pr-[35px] bg-gray-800 border-gray-700 text-white rounded-lg focus-visible:ring-indigo-500"
+                    placeholder="Type a message..."
                     onFocus={() => {
                         const gameInstance = (window as any).game?.scene.keys
                             .GameScene as GameScene;

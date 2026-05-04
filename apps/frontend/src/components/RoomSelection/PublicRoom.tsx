@@ -35,19 +35,25 @@ const PublicRoom = ({
 }) => {
     const bootstrap = (window as any).game?.scene.keys.bootstrap as Bootstrap;
     const [username, setUsername] = useState("");
+    const [roomId, setRoomId] = useState("");
     const isLoading = useAppSelector((state) => state.room.isLoading);
     const myWebcamStream = useAppSelector(
         (state) => state.webcam.myWebcamStream
     );
 
-    const handlePublicRoomJoin = (e) => {
+    const handlePublicRoomJoin = (e: React.FormEvent) => {
         e.preventDefault();
         const selectedCharacter = getSelectedCharacter();
+        const roomToJoin = roomId.trim() || "public";
 
         bootstrap.network
-            .joinOrCreatePublicRoom(username, selectedCharacter)
+            .joinCustomRoom(username, roomToJoin, null, selectedCharacter)
             .then(() => {
                 bootstrap.launchGame();
+            })
+            .catch((err) => {
+                console.error("Failed to join room", err);
+                alert("Could not join room. Please try again.");
             });
     };
 
@@ -66,11 +72,10 @@ const PublicRoom = ({
                             }
                         }}
                     />
-                    Join Public Room
+                    Join Room
                 </CardTitle>
                 <CardDescription className="text-center">
-                    Public rooms are for meeting new people and getting
-                    familiarized with the website.
+                    Enter a room ID to join, or leave empty for a public room
                 </CardDescription>
             </CardHeader>
             <CardContent className="flex gap-4 items-center">
@@ -99,6 +104,16 @@ const PublicRoom = ({
                             value={username}
                             onChange={(e) => {
                                 setUsername(e.target.value);
+                            }}
+                        />
+                        <Label htmlFor="roomId">Room ID (optional)</Label>
+                        <Input
+                            id="roomId"
+                            type="text"
+                            placeholder="e.g., my-room-123"
+                            value={roomId}
+                            onChange={(e) => {
+                                setRoomId(e.target.value);
                             }}
                         />
                         <Button

@@ -201,6 +201,10 @@ export class GameScene extends Phaser.Scene {
     async create(data: { network: Network }) {
         if (data.network) {
             this.network = data.network;
+            // Expose network to window for useWebRTC hook
+            if (typeof window !== "undefined") {
+                (window as any).gameNetwork = data.network;
+            }
         } else {
             throw new Error("network instance missing");
         }

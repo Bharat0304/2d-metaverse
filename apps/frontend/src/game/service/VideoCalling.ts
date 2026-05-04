@@ -51,16 +51,23 @@ class VideoCalling {
     }
 
     public shareWebcam(sessionId: string) {
+        console.log('shareWebcam called with sessionId:', sessionId);
         if (!this.peer) {
             console.warn("Cannot call peer - Peer not initialized");
             return;
         }
         const myWebcamStream = store.getState().webcam.myWebcamStream;
-        if (!myWebcamStream) return;
+        console.log('Current webcam stream:', myWebcamStream ? 'exists' : 'null');
+        if (!myWebcamStream) {
+            console.warn('No webcam stream available to share');
+            return;
+        }
 
         try {
             const userId = sanitizeUserIdForVideoCalling(sessionId);
-            this.peer.call(userId, myWebcamStream);
+            console.log('Calling peer with userId:', userId);
+            const call = this.peer.call(userId, myWebcamStream);
+            console.log('Peer call initiated:', call);
         } catch (err) {
             console.error("Error while sharing webcam:", err);
         }

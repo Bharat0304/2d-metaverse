@@ -51,6 +51,33 @@ export class User {
       case "MOVE":
         this.move(message.x, message.y, message.anim);
         break;
+
+      case "OFFER":
+        this.forwardWebRTCMessage(message);
+        break;
+
+      case "ANSWER":
+        this.forwardWebRTCMessage(message);
+        break;
+
+      case "ICE_CANDIDATE":
+        this.forwardWebRTCMessage(message);
+        break;
+
+      case "CALL_END":
+        this.forwardWebRTCMessage(message);
+        break;
+
+      case "PUSH_GLOBAL_CHAT_MESSAGE":
+        if (this.spaceId) {
+          SpaceManager.broadcastChat(this.spaceId, {
+            type: "NEW_GLOBAL_CHAT_MESSAGE",
+            username: this.username,
+            message: message.message,
+            timestamp: Date.now()
+          });
+        }
+        break;
     }
   }
 
@@ -60,18 +87,19 @@ export class User {
         this.character = character;
         this.anim = `${character}_down_idle`;
     }
-    // TEMPORARY MOCK: Bypassing DB check for testing since the DB isn't running
-    // const space = await prisma.space.findUnique({
-    //   where: { id: spaceId },
-    //   select: { id: true }
-    // });
-    // if (!space) {
-    //   this.ws.send(JSON.stringify({
-    //     type: "ERROR",
-    //     message: "Space not found"
-    //   }));
-    //   return;
-    // }
+    if (spaceId !== "public") {
+      const space = await prisma.space.findFirst({
+        where: { OR: [{ id: spaceId }, { slug: spaceId }] },
+        select: { id: true }
+      });
+      if (!space) {
+        this.ws.send(JSON.stringify({
+          type: "ERROR",
+          message: "Space not found"
+        }));
+        return;
+      }
+    }
 
     this.spaceId = spaceId;
     SpaceManager.join(spaceId, this);
@@ -94,5 +122,17 @@ export class User {
 
   cleanup() {
     console.log(`User ${this.sessionId} disconnected`);
+  }
+
+  forwardWebRTCMessage(message: any) {
+    if (!this.spaceId) return;
+    
+    const targetSessionId = message.to;
+    const users = SpaceManager.getUsers(this.spaceId);
+    const targetUser = users.find((u: User) => u.sessionId === targetSessionId);
+    
+    if (targetUser) {
+      targetUser.ws.send(JSON.stringify(message));
+    }
   }
 }

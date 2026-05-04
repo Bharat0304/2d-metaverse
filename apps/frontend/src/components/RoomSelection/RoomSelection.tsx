@@ -30,7 +30,7 @@ const RoomSelection = () => {
         if (!bootstrap) return;
 
         bootstrap.network
-            .joinOrCreateCustomRoom(roomCode, username, avatarId)
+            .joinCustomRoom(username, roomCode, null, avatarId)
             .then(() => {
                 bootstrap.launchGame();
             })

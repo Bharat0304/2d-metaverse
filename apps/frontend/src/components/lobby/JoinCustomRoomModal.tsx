@@ -46,9 +46,8 @@ export function JoinCustomRoomModal({ onBack, onJoin, onCreate }: JoinCustomRoom
   const handleJoin = () => {
     if (!username.trim())   { setError("Enter your username."); return; }
     if (!roomCode.trim())   { setError("Enter a room code."); return; }
-    if (roomCode.trim().length !== 6) { setError("Room code must be 6 characters."); return; }
     setError(""); setLoading(true);
-    setTimeout(() => onJoin(username.trim(), roomCode.trim().toUpperCase(), AVATARS[avatarIndex].id), 900);
+    setTimeout(() => onJoin(username.trim(), roomCode.trim(), AVATARS[avatarIndex].id), 900);
   };
 
   const handleCreate = () => {
@@ -195,9 +194,9 @@ export function JoinCustomRoomModal({ onBack, onJoin, onCreate }: JoinCustomRoom
                   <InputField
                     label="ROOM CODE"
                     value={roomCode}
-                    onChange={v => { setRoomCode(v.toUpperCase().slice(0, 6)); setError(""); }}
-                    placeholder="e.g. ABC123"
-                    maxLength={6}
+                    onChange={v => { setRoomCode(v); setError(""); }}
+                    placeholder="e.g. my-room or ok"
+                    maxLength={50}
                     mono
                   />
                 </div>

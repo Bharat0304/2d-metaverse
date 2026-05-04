@@ -3,6 +3,7 @@
 import '../vortex.css';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import { signupUser } from '@/lib/auth-api';
 
 export default function SignupPage() {
     const router = useRouter();
@@ -26,9 +27,23 @@ export default function SignupPage() {
     const strengthColors = ['#ff4d6d', '#ffd166', '#06d6a0', '#9b5de5'];
     const barColor = strength > 0 ? strengthColors[Math.min(strength - 1, 3)] : '#f0e8ff';
 
-    const handleSignup = (e: React.FormEvent) => {
+    const handleSignup = async (e: React.FormEvent) => {
         e.preventDefault();
-        router.push('/dashboard');
+        
+        // Get form values (you'll need to add refs or state for form inputs)
+        const name = "Player"; // Get from form
+        const email = "player@vortex.gg"; // Get from form
+        const password = "password123"; // Get from form
+        
+        const result = await signupUser(name, email, password);
+        
+        if (result.success) {
+            // Redirect to dashboard on successful signup
+            router.push('/dashboard');
+        } else {
+            // Show error message
+            alert(result.error);
+        }
     };
 
     return (

@@ -11,7 +11,7 @@
  */
 
 import store from "../../store/store";
-import { setIsLoading } from "../../store/features/room/roomSlice";
+import { setIsLoading, setSpaceId } from "../../store/features/room/roomSlice";
 import {
     pushNewGlobalMessage,
     addGlobalChat,
@@ -20,6 +20,7 @@ import {
 } from "../../store/features/chat/chatSlice";
 import { Event, phaserEvents } from "./EventBus";
 import { officeNames } from "../../lib/utils";
+import { WebRTCManager } from "../service/WebRTCManager";
 
 const WS_URL =
     process.env.NEXT_PUBLIC_WS_URL ?? "ws://localhost:8080";
@@ -32,6 +33,8 @@ export default class Network {
     private spaceId = "";
     private _gameSceneReady = false;
     private _joinComplete = false;
+    private webRTCManager: WebRTCManager | null = null;
+    private pendingPlayers: Array<{ proxy: any; sessionId: string }> = [];
 
     // Called by Bootstrap
     constructor() {
@@ -42,6 +45,10 @@ export default class Network {
         return this._sessionId;
     }
 
+    get webrtcManager() {
+        return this.webRTCManager;
+    }
+
     // ── Room lifecycle ────────────────────────────────────────────────────────
 
     /** Join the plain-WS space — replaces Colyseus joinOrCreate */
@@ -50,6 +57,7 @@ export default class Network {
         this.username  = username;
         this.character = character;
         this.spaceId   = "public";
+        store.dispatch(setSpaceId(this.spaceId));
         await this.connect();
         store.dispatch(setIsLoading(false));
         this._joinComplete = true;
@@ -66,6 +74,7 @@ export default class Network {
         this.username  = username;
         this.character = character;
         this.spaceId   = roomName;
+        store.dispatch(setSpaceId(this.spaceId));
         await this.connect();
         store.dispatch(setIsLoading(false));
         this._joinComplete = true;
@@ -82,6 +91,7 @@ export default class Network {
         this.username  = username;
         this.character = character;
         this.spaceId   = roomId;
+        store.dispatch(setSpaceId(this.spaceId));
         await this.connect();
         store.dispatch(setIsLoading(false));
         this._joinComplete = true;
@@ -117,6 +127,7 @@ export default class Network {
 
             this.ws.onclose = () => {
                 console.warn("[WS] disconnected");
+                this.webRTCManager?.closeAllConnections();
             };
         });
     }
@@ -125,6 +136,12 @@ export default class Network {
         switch (msg.type) {
             case "JOINED_SPACE":
                 this._sessionId = msg.sessionId;
+
+                // Initialize WebRTC manager after we have sessionId
+                this.webRTCManager = new WebRTCManager(
+                    this._sessionId,
+                    (message) => this.send(message)
+                );
 
                 // resolve the connect() promise so launchGame fires
                 resolve?.();
@@ -140,13 +157,23 @@ export default class Network {
                     y: number;
                 }>) {
                     if (u.sessionId === this._sessionId) continue;
-                    phaserEvents.emit(Event.PLAYER_JOINED, this.makePlayerProxy(u), u.sessionId);
+                    const proxy = this.makePlayerProxy(u);
+                    if (this._gameSceneReady) {
+                        phaserEvents.emit(Event.PLAYER_JOINED, proxy, u.sessionId);
+                    } else {
+                        this.pendingPlayers.push({ proxy, sessionId: u.sessionId });
+                    }
                 }
                 break;
 
             case "PLAYER_JOINED":
                 if (msg.sessionId !== this._sessionId) {
-                    phaserEvents.emit(Event.PLAYER_JOINED, this.makePlayerProxy(msg), msg.sessionId);
+                    const proxy = this.makePlayerProxy(msg);
+                    if (this._gameSceneReady) {
+                        phaserEvents.emit(Event.PLAYER_JOINED, proxy, msg.sessionId);
+                    } else {
+                        this.pendingPlayers.push({ proxy, sessionId: msg.sessionId });
+                    }
                 }
                 break;
 
@@ -164,6 +191,32 @@ export default class Network {
 
             case "PLAYER_LEFT":
                 phaserEvents.emit(Event.PLAYER_LEFT, msg.sessionId);
+                this.webRTCManager?.closeConnection(msg.sessionId);
+                break;
+
+            case "PROXIMITY_ENTER":
+                phaserEvents.emit(Event.PROXIMITY_ENTER, msg.with);
+                break;
+
+            case "PROXIMITY_LEAVE":
+                phaserEvents.emit(Event.PROXIMITY_LEAVE, msg.with);
+                this.webRTCManager?.closeConnection(msg.with);
+                break;
+
+            case "OFFER":
+                this.webRTCManager?.handleOffer(msg.from, msg.offer);
+                break;
+
+            case "ANSWER":
+                this.webRTCManager?.handleAnswer(msg.from, msg.answer);
+                break;
+
+            case "ICE_CANDIDATE":
+                this.webRTCManager?.handleIceCandidate(msg.from, msg.candidate);
+                break;
+
+            case "CALL_END":
+                this.webRTCManager?.handleCallEnd(msg.from);
                 break;
 
             case "NEW_GLOBAL_CHAT_MESSAGE":
@@ -272,7 +325,15 @@ export default class Network {
      */
     handleServerMessages = () => {
         this._gameSceneReady = true;
-        if (this._joinComplete) this._emitInitPlayer();
+        if (this._joinComplete) {
+            this._emitInitPlayer();
+        }
+
+        // Emit any players that were received before GameScene was ready
+        for (const p of this.pendingPlayers) {
+            phaserEvents.emit(Event.PLAYER_JOINED, p.proxy, p.sessionId);
+        }
+        this.pendingPlayers = [];
     };
 
     private _emitInitPlayer() {
