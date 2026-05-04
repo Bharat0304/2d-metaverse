@@ -2,6 +2,7 @@ services:
   - type: web
     name: zep-http-server
     env: node
+    plan: free
     rootDir: .
     buildCommand: pnpm install && pnpm build --filter http
     startCommand: pnpm --filter http start
@@ -14,6 +15,7 @@ services:
   - type: web
     name: zep-ws-server
     env: node
+    plan: free
     rootDir: .
     buildCommand: pnpm install && pnpm build --filter ws
     startCommand: pnpm --filter ws start
