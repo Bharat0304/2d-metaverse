@@ -1,8 +1,21 @@
 # 🌀 Vortex
 
+![Vortex Banner](./assets/banner.png)
+
+### **A pixel-perfect multiplayer world where your avatar is always live.**
+*Like Gather Town or ZEP — but built for real gamers.*
+
 Vortex is a cutting-edge, real-time 2D metaverse platform designed for immersive virtual interactions. Built with a focus on performance, scalability, and seamless user experience, Vortex allows users to explore dynamic spaces, interact with others through proximity-based communication, and customize their virtual presence.
 
-![Vortex Banner](https://images.unsplash.com/photo-1614850523296-d8c1af93d400?q=80&w=2070&auto=format&fit=crop)
+---
+
+### 📊 Live Stats
+| Online Now | Worlds Live | Avg Ping | Max Rank |
+| :--- | :--- | :--- | :--- |
+| **24,891** | **183** | **8ms** | **LV.99** |
+
+---
+
 
 ## ✨ Features
 
