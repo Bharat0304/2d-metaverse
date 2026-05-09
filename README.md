@@ -1,135 +1,97 @@
-# Turborepo starter
+# 🌀 Vortex
 
-This Turborepo starter is maintained by the Turborepo core team.
+Vortex is a cutting-edge, real-time 2D metaverse platform designed for immersive virtual interactions. Built with a focus on performance, scalability, and seamless user experience, Vortex allows users to explore dynamic spaces, interact with others through proximity-based communication, and customize their virtual presence.
 
-## Using this example
+![Vortex Banner](https://images.unsplash.com/photo-1614850523296-d8c1af93d400?q=80&w=2070&auto=format&fit=crop)
 
-Run the following command:
+## ✨ Features
 
-```sh
-npx create-turbo@latest
+- **Real-time Multiplayer**: Powered by WebSockets for low-latency player movement and interactions.
+- **Proximity-Based Interaction**: Experience natural social interactions where users can see and talk to those nearby.
+- **Dynamic Virtual Spaces**: Create and join custom rooms with unique maps and layouts.
+- **Integrated Authentication**: Secure sign-in using NextAuth with support for Google and other providers.
+- **Immersive 2D Graphics**: Built using the Phaser game engine for smooth, responsive visuals.
+- **Robust Backend**: A scalable microservices architecture featuring dedicated HTTP and WebSocket servers.
+
+## 🛠️ Tech Stack
+
+Vortex leverages a modern, full-stack technologies to deliver a premium experience:
+
+- **Frontend**: [Next.js](https://nextjs.org/), [React](https://reactjs.org/), [Tailwind CSS](https://tailwindcss.com/)
+- **Game Engine**: [Phaser 3](https://phaser.io/)
+- **Real-time Networking**: [Socket.io](https://socket.io/), [Colyseus.js](https://colyseus.io/)
+- **Communication**: [PeerJS](https://peerjs.com/) (WebRTC) for proximity voice/video
+- **Backend**: [Node.js](https://nodejs.org/), [Express](https://expressjs.com/)
+- **Database**: [PostgreSQL](https://www.postgresql.org/) with [Prisma ORM](https://www.prisma.io/)
+- **Monorepo Management**: [Turborepo](https://turbo.build/repo)
+- **Deployment**: AWS, Render, Docker
+
+## 📂 Project Structure
+
+This project is a monorepo managed by Turborepo:
+
+```text
+.
+├── apps
+│   ├── frontend     # Next.js web application
+│   ├── http         # REST API for metadata and room management
+│   ├── ws           # WebSocket server for real-time state
+│   └── client       # Phaser-based game client logic
+├── packages
+│   ├── db           # Shared Prisma schema and database client
+│   ├── ui           # Shared React component library
+│   ├── eslint-config # Shared linting configuration
+│   └── typescript-config # Shared TypeScript configuration
 ```
 
-## What's inside?
+## 🚀 Getting Started
 
-This Turborepo includes the following packages/apps:
+### Prerequisites
 
-### Apps and Packages
+- [Node.js](https://nodejs.org/) (v22.x recommended)
+- [pnpm](https://pnpm.io/) (v9.x)
+- [Docker](https://www.docker.com/) (optional, for local database)
 
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
+### Installation
 
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
+1. **Clone the repository**:
+   ```bash
+   git clone https://github.com/your-username/vortex.git
+   cd vortex
+   ```
 
-### Utilities
+2. **Install dependencies**:
+   ```bash
+   pnpm install
+   ```
 
-This Turborepo has some additional tools already setup for you:
+3. **Set up Environment Variables**:
+   Create `.env` files in `apps/http`, `apps/ws`, and `apps/frontend` based on the provided `.env.example` files.
 
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
+4. **Initialize the Database**:
+   ```bash
+   cd packages/db
+   pnpm prisma generate
+   pnpm prisma db push
+   ```
 
-### Build
+5. **Run in Development Mode**:
+   From the root directory:
+   ```bash
+   pnpm dev
+   ```
 
-To build all apps and packages, run the following command:
+## 🚢 Deployment
 
-```
-cd my-turborepo
+Vortex is designed to be easily deployable using Docker.
 
-# With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended)
-turbo build
+- Use `docker-compose.yml` to spin up the entire stack locally or in production.
+- Scripts for AWS and DigitalOcean deployment are available in the root: `deploy-backend-aws.sh`, `deploy-backend-docean.sh`.
 
-# Without [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation), use your package manager
-npx turbo build
-yarn dlx turbo build
-pnpm exec turbo build
-```
+## 🤝 Contributing
 
-You can build a specific package by using a [filter](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters):
+Contributions are welcome! Please feel free to submit a Pull Request.
 
-```
-# With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended)
-turbo build --filter=docs
+---
 
-# Without [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation), use your package manager
-npx turbo build --filter=docs
-yarn exec turbo build --filter=docs
-pnpm exec turbo build --filter=docs
-```
-
-### Develop
-
-To develop all apps and packages, run the following command:
-
-```
-cd my-turborepo
-
-# With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended)
-turbo dev
-
-# Without [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation), use your package manager
-npx turbo dev
-yarn exec turbo dev
-pnpm exec turbo dev
-```
-
-You can develop a specific package by using a [filter](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters):
-
-```
-# With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended)
-turbo dev --filter=web
-
-# Without [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation), use your package manager
-npx turbo dev --filter=web
-yarn exec turbo dev --filter=web
-pnpm exec turbo dev --filter=web
-```
-
-### Remote Caching
-
-> [!TIP]
-> Vercel Remote Cache is free for all plans. Get started today at [vercel.com](https://vercel.com/signup?/signup?utm_source=remote-cache-sdk&utm_campaign=free_remote_cache).
-
-Turborepo can use a technique known as [Remote Caching](https://turborepo.dev/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
-
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup?utm_source=turborepo-examples), then enter the following commands:
-
-```
-cd my-turborepo
-
-# With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended)
-turbo login
-
-# Without [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation), use your package manager
-npx turbo login
-yarn exec turbo login
-pnpm exec turbo login
-```
-
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
-
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
-
-```
-# With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended)
-turbo link
-
-# Without [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation), use your package manager
-npx turbo link
-yarn exec turbo link
-pnpm exec turbo link
-```
-
-## Useful Links
-
-Learn more about the power of Turborepo:
-
-- [Tasks](https://turborepo.dev/docs/crafting-your-repository/running-tasks)
-- [Caching](https://turborepo.dev/docs/crafting-your-repository/caching)
-- [Remote Caching](https://turborepo.dev/docs/core-concepts/remote-caching)
-- [Filtering](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters)
-- [Configuration Options](https://turborepo.dev/docs/reference/configuration)
-- [CLI Usage](https://turborepo.dev/docs/reference/command-line-reference)
+Built with ❤️ by the Vortex Team.
