@@ -101,10 +101,5 @@ Vortex is designed to be easily deployable using Docker.
 - Use `docker-compose.yml` to spin up the entire stack locally or in production.
 - Scripts for AWS and DigitalOcean deployment are available in the root: `deploy-backend-aws.sh`, `deploy-backend-docean.sh`.
 
-## 🤝 Contributing
 
-Contributions are welcome! Please feel free to submit a Pull Request.
 
----
-
-Built with ❤️ by the Vortex Team.
